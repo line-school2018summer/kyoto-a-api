@@ -24,7 +24,7 @@ class UserController(private val userProfileService: UserProfileService, private
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun hello(): String{
-        return "{\"greeting\": \"Hello World!\"}"
+        return "{\"greeting\": \"こんにちは!\"}"
     }
 
     @GetMapping(
