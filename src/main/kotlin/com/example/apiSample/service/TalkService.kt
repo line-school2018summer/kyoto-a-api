@@ -14,7 +14,7 @@ class TalkService(private val talkMapper: TalkMapper) {
         return talks
     }
 
-    fun getTalk(talkId: Long): Talk {
+    fun getTalkFromId(talkId: Long): Talk {
         val talk = talkMapper.findByTalkId(talkId)
         return talk
     }
