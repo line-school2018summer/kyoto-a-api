@@ -1,3 +1,6 @@
+create database `kyoto-a`;
+use `kyoto-a`;
+
 create table Users (
     id bigint(13) NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `uid` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL,

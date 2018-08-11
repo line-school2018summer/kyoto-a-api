@@ -2,6 +2,6 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/apisample
+    url: jdbc:mysql://localhost:3306/kyoto-a
     username: dbuser
     password: lineschool
