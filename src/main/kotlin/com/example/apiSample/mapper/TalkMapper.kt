@@ -2,8 +2,7 @@ package com.example.apiSample.mapper
 
 import com.example.apiSample.model.Talk
 import com.example.apiSample.model.TalkList
-import org.apache.ibatis.annotations.Mapper
-import org.apache.ibatis.annotations.Select
+import org.apache.ibatis.annotations.*
 
 @Mapper
 interface TalkMapper {
@@ -20,4 +19,25 @@ interface TalkMapper {
         """
     )
     fun findByRoomId(roomId: Long): ArrayList<TalkList>
+
+    @Insert(
+        """
+        INSERT INTO talks(room_id, user_id, `text`) VALUES(#{roomId}, #{userId}, #{text})
+        """
+    )
+    fun createTalk(roomId: Long, userId: Long, text: String): Talk
+
+    @Update(
+        """
+        UPDATE talks SET `text` = #{text} WHERE id = #{talkId}
+        """
+    )
+    fun updateTalk(talkId: Long, text: String): Talk
+
+    @Delete(
+        """
+        DELETE FROM talks WHERE id = #{talkId}
+        """
+    )
+    fun deleteTalk(talkId: Long): Boolean
 }
