@@ -18,4 +18,18 @@ class TalkService(private val talkMapper: TalkMapper) {
         val talk = talkMapper.findByTalkId(talkId)
         return talk
     }
+
+    fun createTalk(roomId: Long, userId: Long, text: String): Talk {
+        val talk = talkMapper.createTalk(roomId, userId, text)
+        return talk
+    }
+
+    fun updateTalk(talkId: Long, text: String): Talk {
+        val talk = talkMapper.updateTalk(talkId, text)
+        return talk
+    }
+
+    fun deleteTalk(talkId: Long): Boolean {
+        return talkMapper.deleteTalk(talkId)
+    }
 }
