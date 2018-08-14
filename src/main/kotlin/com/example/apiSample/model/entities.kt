@@ -16,6 +16,8 @@ data class UserList(
         var name: String,
         var email: String
 )
+
+
 data class User(
     var id: Long,
     var uid: String,

@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Update
 
 @Mapper
 interface UserMapper {
+
     @Select(
         """
         SELECT id, name, email, created_at, updated_at FROM users WHERE id=#{userId}
@@ -23,6 +24,7 @@ interface UserMapper {
     )
     fun findBySearchStr(searchStr: String): ArrayList<UserList>
 
+
     //全ユーザのリストを返します
     @Select(
         """
@@ -33,7 +35,7 @@ interface UserMapper {
 
     @Update(
         """
-        UPDATE name SET name=#{changedName} WHERE uid=#{uid}
+        UPDATE Users SET name=#{changedName} WHERE uid=#{uid}
         """
     )
     fun updateName(uid: String, changedName: String): Unit
@@ -47,7 +49,7 @@ interface UserMapper {
 
     @Select(
         """
-          SELECT id, uid, name, created_at, updated_at FROM users WHERE id=#{id}
+        SELECT id, uid, name, created_at, updated_at FROM users WHERE id=#{id}
         """
     )
     fun findById(id: Long): User

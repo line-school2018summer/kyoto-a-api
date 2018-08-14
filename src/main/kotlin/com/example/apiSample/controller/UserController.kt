@@ -20,15 +20,9 @@ data class PostSearchRequest(
 )
 
 @RestController
-class UserController(private val userProfileService: UserProfileService, private val userService: UserService) {
-
-    @GetMapping(
-            value = ["/user/{id}/profile"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-    )
-    fun getProfile(@PathVariable("id" ) userId: Long): UserProfile {
-        return userProfileService.getProfile(userId)
-    }
+class UserController(private val userProfileService: UserProfileService,
+                     private val userService: UserService, private,
+                     private val auth: FirebaseGateway) {
 
     @GetMapping(
             value = ["/users"],
@@ -43,9 +37,8 @@ class UserController(private val userProfileService: UserProfileService, private
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun getUserInfoById(@RequestHeader(value="Token", required=true)token: String): User {
-        val auth = AuthMiddleware()
         auth.authInit()
-        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
+        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
         return userService.findByUid(uid)
     }
 
@@ -54,10 +47,9 @@ class UserController(private val userProfileService: UserProfileService, private
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun updateName(@RequestHeader(value="Token", required=true)token: String,
-                   @PathParam("name") changedName: String): Unit{
-        val auth = AuthMiddleware()
+                   @PathParam("name") changedName: String): Unit {
         auth.authInit()
-        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
+        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
         userService.updateName(uid, changedName)
     }
 
@@ -69,6 +61,7 @@ class UserController(private val userProfileService: UserProfileService, private
         return userService.findById(id)
     }
 
+    //まだ実装していません（apiSampleのまま）
     @PostMapping(
             value = ["/user/search"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
