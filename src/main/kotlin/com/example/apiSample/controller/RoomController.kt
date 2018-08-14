@@ -30,5 +30,6 @@ class RoomController(private val talkService: TalkService, private val userServi
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
         val user = userService.findByUid(uid)
         val talk: Talk = talkService.createTalk(roomId, user.id, request.text)
+        return talk
     }
 }
