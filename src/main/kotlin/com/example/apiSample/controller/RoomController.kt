@@ -15,8 +15,8 @@ class RoomController(private val talkService: TalkService, private val userServi
             value = ["/rooms/{id}/talks"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getTalks(@PathVariable("id" ) roomId: Long): ArrayList<TalkList> {
-        val Talks: ArrayList<TalkList> = talkService.getTalksFromRoomId(roomId)
+    fun getTalks(@PathVariable("id" ) roomId: Long, @RequestParam since_id: String, @RequestParam limit: String): ArrayList<TalkList> {
+        val Talks: ArrayList<TalkList> = talkService.getTalksFromRoomId(roomId, since_id.toLongOrNull() ?: 0, limit.toIntOrNull() ?: 50)
         return Talks
     }
 

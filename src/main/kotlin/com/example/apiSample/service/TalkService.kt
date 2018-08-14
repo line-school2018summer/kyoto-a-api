@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class TalkService(private val talkMapper: TalkMapper) {
-    fun getTalksFromRoomId(roomId: Long): ArrayList<TalkList> {
-        val talks = talkMapper.findByRoomId(roomId)
+    fun getTalksFromRoomId(roomId: Long, sinceId: Long = 0, limit: Int = 50): ArrayList<TalkList> {
+        val talks = talkMapper.findByRoomId(roomId, sinceId, limit)
         return talks
     }
 

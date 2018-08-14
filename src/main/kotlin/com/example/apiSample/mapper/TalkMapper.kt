@@ -15,10 +15,10 @@ interface TalkMapper {
 
     @Select(
         """
-        SELECT id, room_id, user_id, `text` FROM talks WHERE room_id=#{roomId}
+        SELECT id, room_id, user_id, `text` FROM talks WHERE room_id=#{roomId} AND id > #{sinceId} LIMIT #{limit}
         """
     )
-    fun findByRoomId(roomId: Long): ArrayList<TalkList>
+    fun findByRoomId(roomId: Long, sinceId: Long = 0, limit: Int = 50): ArrayList<TalkList>
 
     @Insert(
         """
