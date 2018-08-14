@@ -1,14 +1,14 @@
 package com.example.apiSample.service
 
 import com.example.apiSample.mapper.RoomMapper
-import com.example.apiSample.mapper.UserMapper
+import com.example.apiSample.mapper.UserRoomMapper
 import com.example.apiSample.model.Room
 import com.example.apiSample.model.RoomList
-import com.example.apiSample.model.UserList
+import com.example.apiSample.model.UserRoom
 import org.springframework.stereotype.Service
 
 @Service
-class RoomService(private val roomMapper: RoomMapper) {
+class RoomService(private val roomMapper: RoomMapper, private val userRoomMapper: UserRoomMapper) {
 
     fun getRoomFromId(roomId: Long): Room {
         val room = roomMapper.findByRoomId(roomId)
@@ -20,9 +20,14 @@ class RoomService(private val roomMapper: RoomMapper) {
         return rooms
     }
 
-    fun createRoom(userId: Long, name: String): Room {
-        val room = roomMapper.createRoom(userId, name)
+    fun createRoom(name: String): Room {
+        val room = roomMapper.createRoom(name)
         return room
+    }
+
+    fun createUserRoom(userId: Long, roomId: Long): UserRoom {
+        val userRoom = userRoomMapper.createUserRoom(userId, roomId)
+        return userRoom
     }
 
     fun updateRoom(roomId: Long, name: String): Room {
@@ -32,5 +37,9 @@ class RoomService(private val roomMapper: RoomMapper) {
 
     fun deleteRoom(roomId: Long): Boolean {
         return roomMapper.deleteRoom(roomId)
+    }
+
+    fun deleteUserRoom(userId: Long, roomId: Long): Boolean {
+        return userRoomMapper.deleteUserRoom(userId, roomId)
     }
 }
