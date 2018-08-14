@@ -1,5 +1,6 @@
 package com.example.apiSample.service
 
+import com.example.apiSample.controller.UnauthorizedException
 import com.example.apiSample.mapper.TalkMapper
 import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.model.Talk
@@ -24,9 +25,12 @@ class TalkService(private val talkMapper: TalkMapper) {
         return talk
     }
 
-    fun updateTalk(talkId: Long, text: String): Talk {
-        val talk = talkMapper.updateTalk(talkId, text)
-        return talk
+    fun updateTalk(userId: Long, talkId: Long, text: String): Talk {
+        val talk = this.getTalkFromId(talkId)
+        if (talk.user_id == userId) {
+            return talkMapper.updateTalk(talkId, text)
+        }
+        throw UnauthorizedException("talk creator only can update talks")
     }
 
     fun deleteTalk(talkId: Long): Boolean {
