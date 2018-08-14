@@ -1,11 +1,9 @@
 package com.example.apiSample.service
 
-import com.example.apiSample.controller.UnauthorizedException
+import com.example.apiSample.controller.BadRequestException
 import com.example.apiSample.mapper.TalkMapper
-import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.model.Talk
 import com.example.apiSample.model.TalkList
-import com.example.apiSample.model.UserProfile
 import org.springframework.stereotype.Service
 
 @Service
@@ -30,7 +28,7 @@ class TalkService(private val talkMapper: TalkMapper) {
         if (talk.user_id == userId) {
             return talkMapper.updateTalk(talkId, text)
         }
-        throw UnauthorizedException("talk creator only can update talk")
+        throw BadRequestException("talk creator only can update talk")
     }
 
     fun deleteTalk(userId: Long, talkId: Long): Boolean {
@@ -38,6 +36,6 @@ class TalkService(private val talkMapper: TalkMapper) {
         if (talk.user_id == userId) {
             return talkMapper.deleteTalk(talkId)
         }
-        throw UnauthorizedException("talk creator only can delete talk")
+        throw BadRequestException("talk creator only can delete talk")
     }
 }
