@@ -25,8 +25,8 @@ class RoomController(private val talkService: TalkService, private val userServi
             value = ["/rooms/{id}/talks"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun createTalk(@RequestHeader(value="Token", required=true) String token, @PathVariable("id") roomId: Long, @RequestBody request: PostTalkRequest): Talk {
-        val auth = AuthMiddleware()
+    fun createTalk(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") roomId: Long, @RequestBody request: PostTalkRequest): Talk {
+        val auth = FirebaseGateway()
         auth.authInit()
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
         val user = userService.findByUid(uid)
