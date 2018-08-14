@@ -27,14 +27,6 @@ class UserController(private val userProfileService: UserProfileService, private
         return "{\"greeting\": \"こんにちは!\"}"
     }
 
-    @GetMapping(
-            value = ["/user/{id}/profile"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-    )
-    fun getProfile(@PathVariable("id" ) userId: Long): UserProfile {
-        return userProfileService.getProfile(userId)
-    }
-
     @PostMapping(
             value = ["/user/search"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
