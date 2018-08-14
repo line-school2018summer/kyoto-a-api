@@ -21,8 +21,12 @@ data class PostSearchRequest(
 
 @RestController
 class UserController(private val userProfileService: UserProfileService,
-                     private val userService: UserService, private,
+                     private val userService: UserService,
                      private val auth: FirebaseGateway) {
+
+    init {
+      auth.authInit()
+    }
 
     @GetMapping(
             value = ["/users"],
@@ -37,7 +41,6 @@ class UserController(private val userProfileService: UserProfileService,
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun getUserInfoById(@RequestHeader(value="Token", required=true)token: String): User {
-        auth.authInit()
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
         return userService.findByUid(uid)
     }
@@ -48,7 +51,6 @@ class UserController(private val userProfileService: UserProfileService,
     )
     fun updateName(@RequestHeader(value="Token", required=true)token: String,
                    @PathParam("name") changedName: String): Unit {
-        auth.authInit()
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
         userService.updateName(uid, changedName)
     }
