@@ -16,3 +16,10 @@ data class UserList(
         var name: String,
         var email: String
 )
+data class User(
+    var id: Long,
+    var uid: String,
+    var name: String,
+    @get:JsonProperty("created_at") var createdAt: Timestamp,
+    @get:JsonProperty("updated_at") var updatedAt: Timestamp
+)

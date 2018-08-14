@@ -1,11 +1,13 @@
 package com.example.apiSample.controller
 
+import com.example.apiSample.model.User
 import com.example.apiSample.model.UserProfile
 import com.example.apiSample.model.UserList
 import com.example.apiSample.service.UserProfileService
 import com.example.apiSample.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import javax.websocket.server.PathParam
 
 data class UserListResponse(
         var id: Long,
@@ -19,13 +21,6 @@ data class PostSearchRequest(
 
 @RestController
 class UserController(private val userProfileService: UserProfileService, private val userService: UserService) {
-    @GetMapping(
-            value = ["/user"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-    )
-    fun hello(): String{
-        return "{\"greeting\": \"こんにちは!\"}"
-    }
 
     @GetMapping(
             value = ["/user/{id}/profile"],
@@ -33,6 +28,45 @@ class UserController(private val userProfileService: UserProfileService, private
     )
     fun getProfile(@PathVariable("id" ) userId: Long): UserProfile {
         return userProfileService.getProfile(userId)
+    }
+
+    @GetMapping(
+            value = ["/users"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getUserList(): ArrayList<User>{
+        return userService.getUserList()
+    }
+
+    @GetMapping(
+            value = ["/users/me"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getUserInfoById(@RequestHeader(value="Token", required=true)token: String): User {
+        val auth = AuthMiddleware()
+        auth.authInit()
+        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
+        return userService.findByUid(uid)
+    }
+
+    @PutMapping(
+            value = ["/users/me"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun updateName(@RequestHeader(value="Token", required=true)token: String,
+                   @PathParam("name") changedName: String): Unit{
+        val auth = AuthMiddleware()
+        auth.authInit()
+        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
+        userService.updateName(uid, changedName)
+    }
+
+    @GetMapping(
+            value = ["/users/{id}"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun findById(@PathVariable("id")id: Long): User{
+        return userService.findById(id)
     }
 
     @PostMapping(

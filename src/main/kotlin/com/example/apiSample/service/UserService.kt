@@ -1,6 +1,7 @@
 package com.example.apiSample.service
 
 import com.example.apiSample.mapper.UserMapper
+import com.example.apiSample.model.User
 import com.example.apiSample.model.UserList
 import org.springframework.stereotype.Service
 
@@ -9,5 +10,22 @@ class UserService(private val userMapper: UserMapper) {
 
     fun findUsersList(searchStr: String): ArrayList<UserList> {
         return userMapper.findBySearchStr(searchStr)
+    }
+
+    fun findByUid(uid: String): User {
+        return userMapper.findByUid(uid)
+    }
+
+    //Userのリスト返却
+    fun getUserList(): ArrayList<User>{
+        return userMapper.getUserList()
+    }
+
+    fun findById(id: Long): User{
+        return userMapper.findById(id)
+    }
+
+    fun updateName(uid: String, changedName: String): Unit{
+        userMapper.updateName(uid, changedName)
     }
 }
