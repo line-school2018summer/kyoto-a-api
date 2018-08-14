@@ -5,7 +5,6 @@ import com.example.apiSample.model.Talk
 import com.example.apiSample.model.TalkList
 import com.example.apiSample.service.TalkService
 import com.example.apiSample.service.UserService
-import org.apache.ibatis.javassist.NotFoundException
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
