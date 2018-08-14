@@ -30,10 +30,14 @@ class TalkService(private val talkMapper: TalkMapper) {
         if (talk.user_id == userId) {
             return talkMapper.updateTalk(talkId, text)
         }
-        throw UnauthorizedException("talk creator only can update talks")
+        throw UnauthorizedException("talk creator only can update talk")
     }
 
-    fun deleteTalk(talkId: Long): Boolean {
-        return talkMapper.deleteTalk(talkId)
+    fun deleteTalk(userId: Long, talkId: Long): Boolean {
+        val talk = this.getTalkFromId(talkId)
+        if (talk.user_id == userId) {
+            return talkMapper.deleteTalk(talkId)
+        }
+        throw UnauthorizedException("talk creator only can delete talk")
     }
 }

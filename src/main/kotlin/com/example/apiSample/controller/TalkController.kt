@@ -29,4 +29,16 @@ class TalkController(private val talkService: TalkService, private val userServi
         val user = userService.findByUid(uid)
         return talkService.updateTalk(user.id, talkId, request.text)
     }
+
+    @DeleteMapping(
+            value = ["/talks/{id}"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun deleteTalk(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") talkId: Long, @RequestBody request: PostTalkRequest): Boolean {
+        val auth = FirebaseGateway()
+        auth.authInit()
+        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
+        val user = userService.findByUid(uid)
+        return talkService.deleteTalk(user.id, talkId)
+    }
 }
