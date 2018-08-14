@@ -19,6 +19,7 @@ class TalkService(private val talkMapper: TalkMapper) {
     }
 
     fun createTalk(roomId: Long, userId: Long, text: String): Talk {
+        // TODO: check "ユーザーがルームに入っているか"
         val talk = talkMapper.createTalk(roomId, userId, text)
         return talk
     }
