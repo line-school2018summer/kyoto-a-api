@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserProfileService(private val userMapper: UserMapper) {
+    /*
     fun getProfile(userId: Long): UserProfile {
         val profile = userMapper.findByUserId(userId)
         return profile
     }
+    */
 }

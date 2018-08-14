@@ -7,11 +7,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(private val userMapper: UserMapper) {
-    /*
-    fun findUsersList(searchStr: String): ArrayList<UserList> {
-        return userMapper.findBySearchStr(searchStr)
-    }
-    */
 
     fun findByUid(uid: String): User {
         return userMapper.findByUid(uid)
