@@ -1,5 +1,6 @@
 package com.example.apiSample.controller
 
+import com.example.apiSample.model.UserList
 import com.example.apiSample.model.Room
 import com.example.apiSample.model.RoomList
 import com.example.apiSample.service.RoomService
@@ -16,10 +17,6 @@ data class PostRoomRequest(
 class RoomController(private val roomService: RoomService,
                      private val userService: UserService,
                      private val auth: FirebaseGateway) {
-    init {
-        auth.authInit()
-    }
-
     @GetMapping(
             value = ["/rooms/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -59,6 +56,14 @@ class RoomController(private val roomService: RoomService,
         return roomService.updateRoom(roomId, request.name)
     }
 
+    @GetMapping(
+            value = ["/rooms/{id}/members"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getMember(@PathVariable("id" ) roomId: Long): ArrayList<UserList> {
+        return roomService.getMembers(roomId)
+    }
+
     @PutMapping(
             value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -71,7 +76,7 @@ class RoomController(private val roomService: RoomService,
     }
 
     @DeleteMapping(
-            value = ["/rooms/{id}"],
+            value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun deleteUserRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {

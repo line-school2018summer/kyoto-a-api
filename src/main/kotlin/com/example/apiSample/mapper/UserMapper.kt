@@ -28,4 +28,11 @@ interface UserMapper {
         """
     )
     fun findByUid(uid: String): User
+
+    @Select(
+            """
+        SELECT Users.id, Users.`name` FROM UserRooms LEFT JOIN Users ON UserRooms.user_id=Users.id WHERE UserRooms.room_id=#{roomId}
+        """
+    )
+    fun findByRoomId(roomId: Long): ArrayList<UserList>
 }
