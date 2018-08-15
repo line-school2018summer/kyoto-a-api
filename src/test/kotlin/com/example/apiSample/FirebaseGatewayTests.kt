@@ -19,7 +19,6 @@ class FirebaseGatewayTests{
 
         //初期化
         val auth = FirebaseGateway()
-        auth.authInit()
 
         //CASE1 : jwtの形式でない場合はnullが返ってくる。
         var token  = "hogehoge"
