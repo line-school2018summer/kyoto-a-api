@@ -25,7 +25,7 @@ data class User(
         @get:JsonProperty("updated_at") var updatedAt: Timestamp
 )
 
-data class Talk(
+data class Message(
         var id: Long,
         var room_id: Long,
         var user_id: Long,
@@ -34,7 +34,7 @@ data class Talk(
         @get:JsonProperty("updated_at") var updatedAt: Timestamp
         )
 
-data class TalkList(
+data class MessageList(
         var id: Long,
         var room_id: Long,
         var user_id: Long,

@@ -1,5 +1,5 @@
 package com.example.apiSample.Requests
 
-class PostTalkRequest (
+class PostMessageRequest (
     var text: String = ""
 )
