@@ -18,7 +18,7 @@ interface MessageMapper {
         SELECT id, room_id, user_id, `text` FROM messages WHERE room_id=#{roomId} AND id > #{sinceId} LIMIT #{limit}
         """
     )
-    fun findByRoomId(roomId: Long, sinceId: Long = 0, limit: Int = 50): ArrayList<MessageList>
+    fun findByRoomId(roomId: Long, sinceId: Long, limit: Int): ArrayList<MessageList>
 
     @Insert(
         """
