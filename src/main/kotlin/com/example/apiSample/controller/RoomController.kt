@@ -40,7 +40,7 @@ class RoomController(private val roomService: RoomService,
     }
 
     @PostMapping(
-            value = ["/rooms/create"],
+            value = ["/rooms"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun createRoom(@RequestBody request: PostRoomRequest): Room {
@@ -52,7 +52,7 @@ class RoomController(private val roomService: RoomService,
     }
 
     @PutMapping(
-            value = ["/rooms/{id}"],
+            value = ["/rooms/{id}/name"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun updateRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
@@ -60,7 +60,7 @@ class RoomController(private val roomService: RoomService,
     }
 
     @PutMapping(
-            value = ["/rooms/{id}"],
+            value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun createUserRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
