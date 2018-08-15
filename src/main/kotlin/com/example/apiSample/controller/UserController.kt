@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*
 
 data class UserListResponse(
         var id: Long,
-        var name: String,
-        var email: String
+        var uid: String,
+        var name: String
 )
 
 data class PostSearchRequest(
@@ -44,8 +44,8 @@ class UserController(private val userProfileService: UserProfileService, private
         return mapOf("results" to userList.map {
             UserListResponse(
                     id = it.id,
-                    name = it.name,
-                    email = it.email
+                    uid = it.uid,
+                    name = it.name
             )
         })
     }

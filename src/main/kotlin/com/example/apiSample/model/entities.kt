@@ -21,8 +21,8 @@ data class User(
 
 data class UserList(
         var id: Long,
-        var name: String,
-        var email: String
+        var uid: String,
+        var name: String
 )
 
 data class Room(
