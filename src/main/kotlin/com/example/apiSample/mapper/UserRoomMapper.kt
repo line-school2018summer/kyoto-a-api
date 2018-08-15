@@ -24,12 +24,12 @@ interface UserRoomMapper {
         INSERT INTO userRooms(user_id, room_id) VALUES(#{userId}, #{roomId})
         """
     )
-    fun createUserRoom(userId: Long, roomId: Long): UserRoom
+    fun addMember(userId: Long, roomId: Long): UserRoom
 
     @Delete(
             """
         DELETE FROM userRooms WHERE user_id = #{userId} AND room_id = #{roomId}
         """
     )
-    fun deleteUserRoom(userId: Long, roomId: Long): Boolean
+    fun removeMember(userId: Long, roomId: Long): Boolean
 }

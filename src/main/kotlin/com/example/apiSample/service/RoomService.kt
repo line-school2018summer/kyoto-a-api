@@ -26,7 +26,7 @@ class RoomService(private val roomMapper: RoomMapper, private val userRoomMapper
     }
 
     fun createUserRoom(userId: Long, roomId: Long): UserRoom {
-        val userRoom = userRoomMapper.createUserRoom(userId, roomId)
+        val userRoom = userRoomMapper.addMember(userId, roomId)
         return userRoom
     }
 
@@ -40,6 +40,6 @@ class RoomService(private val roomMapper: RoomMapper, private val userRoomMapper
     }
 
     fun deleteUserRoom(userId: Long, roomId: Long): Boolean {
-        return userRoomMapper.deleteUserRoom(userId, roomId)
+        return userRoomMapper.addMember(userId, roomId)
     }
 }
