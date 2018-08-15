@@ -8,35 +8,35 @@ import org.springframework.stereotype.Service
 
 @Service
 class MessageService(private val messageMapper: MessageMapper) {
-    fun getTalksFromRoomId(roomId: Long, sinceId: Long = 0, limit: Int = 50): ArrayList<MessageList> {
-        val talks = messageMapper.findByRoomId(roomId, sinceId, limit)
-        return talks
+    fun getMessagesFromRoomId(roomId: Long, sinceId: Long = 0, limit: Int = 50): ArrayList<MessageList> {
+        val messages = messageMapper.findByRoomId(roomId, sinceId, limit)
+        return messages
     }
 
-    fun getTalkFromId(talkId: Long): Message {
-        val talk = messageMapper.findById(talkId)
-        return talk
+    fun getMessageFromId(messageId: Long): Message {
+        val message = messageMapper.findById(messageId)
+        return message
     }
 
-    fun createTalk(roomId: Long, userId: Long, text: String): Message {
+    fun createMessage(roomId: Long, userId: Long, text: String): Message {
         // TODO: check "ユーザーがルームに入っているか"
-        val talk = messageMapper.createMessage(roomId, userId, text)
-        return talk
+        val message = messageMapper.createMessage(roomId, userId, text)
+        return message
     }
 
-    fun updateTalk(userId: Long, talkId: Long, text: String): Message {
-        val talk = this.getTalkFromId(talkId)
-        if (talk.user_id == userId) {
-            return messageMapper.updateMessage(talkId, text)
+    fun updateMessage(userId: Long, messageId: Long, text: String): Message {
+        val message = this.getMessageFromId(messageId)
+        if (message.user_id == userId) {
+            return messageMapper.updateMessage(messageId, text)
         }
-        throw BadRequestException("talk creator only can update talk")
+        throw BadRequestException("message creator only can update message")
     }
 
-    fun deleteTalk(userId: Long, talkId: Long): Boolean {
-        val talk = this.getTalkFromId(talkId)
-        if (talk.user_id == userId) {
-            return messageMapper.deleteMessage(talkId)
+    fun deleteMessage(userId: Long, messageId: Long): Boolean {
+        val message = this.getMessageFromId(messageId)
+        if (message.user_id == userId) {
+            return messageMapper.deleteMessage(messageId)
         }
-        throw BadRequestException("talk creator only can delete talk")
+        throw BadRequestException("message creator only can delete message")
     }
 }

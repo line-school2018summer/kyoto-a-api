@@ -15,8 +15,8 @@ class RoomController(private val messageService: MessageService, private val use
             value = ["/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getTalks(@PathVariable("id" ) roomId: Long, @RequestParam since_id: String, @RequestParam limit: String): ArrayList<MessageList> {
-        val messages: ArrayList<MessageList> = messageService.getTalksFromRoomId(roomId, since_id.toLongOrNull() ?: 0, limit.toIntOrNull() ?: 50)
+    fun getMessages(@PathVariable("id" ) roomId: Long, @RequestParam since_id: String, @RequestParam limit: String): ArrayList<MessageList> {
+        val messages: ArrayList<MessageList> = messageService.getMessagesFromRoomId(roomId, since_id.toLongOrNull() ?: 0, limit.toIntOrNull() ?: 50)
         return messages
     }
 
@@ -24,12 +24,12 @@ class RoomController(private val messageService: MessageService, private val use
             value = ["/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun createTalk(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") roomId: Long, @RequestBody request: PostMessageRequest): Message {
+    fun createMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") roomId: Long, @RequestBody request: PostMessageRequest): Message {
         val auth = FirebaseGateway()
         auth.authInit()
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
         val user = userService.findByUid(uid)
-        val message: Message = messageService.createTalk(roomId, user.id, request.text)
+        val message: Message = messageService.createMessage(roomId, user.id, request.text)
         return message
     }
 }

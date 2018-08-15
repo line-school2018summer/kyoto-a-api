@@ -14,31 +14,31 @@ class MessageController(private val messageService: MessageService, private val 
             value = ["/messages/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getTalk(@PathVariable("id" ) talkId: Long): Message {
-        return messageService.getTalkFromId(talkId)
+    fun getMessage(@PathVariable("id" ) messageId: Long): Message {
+        return messageService.getMessageFromId(messageId)
     }
 
     @PutMapping(
             value = ["/messages/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun updateTalk(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") talkId: Long, @RequestBody request: PostMessageRequest): Message {
+    fun updateMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") messageId: Long, @RequestBody request: PostMessageRequest): Message {
         val auth = FirebaseGateway()
         auth.authInit()
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
         val user = userService.findByUid(uid)
-        return messageService.updateTalk(user.id, talkId, request.text)
+        return messageService.updateMessage(user.id, messageId, request.text)
     }
 
     @DeleteMapping(
             value = ["/messages/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun deleteTalk(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") talkId: Long, @RequestBody request: PostMessageRequest): Boolean {
+    fun deleteMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") messageId: Long, @RequestBody request: PostMessageRequest): Boolean {
         val auth = FirebaseGateway()
         auth.authInit()
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
         val user = userService.findByUid(uid)
-        return messageService.deleteTalk(user.id, talkId)
+        return messageService.deleteMessage(user.id, messageId)
     }
 }

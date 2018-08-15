@@ -8,10 +8,10 @@ import org.apache.ibatis.annotations.*
 interface MessageMapper {
     @Select(
         """
-        SELECT id, room_id, user_id, `text`, created_at, updated_at FROM messages WHERE id=#{talkId}
+        SELECT id, room_id, user_id, `text`, created_at, updated_at FROM messages WHERE id=#{messageId}
         """
     )
-    fun findById(talkId: Long): Message
+    fun findById(messageId: Long): Message
 
     @Select(
         """
@@ -29,15 +29,15 @@ interface MessageMapper {
 
     @Update(
         """
-        UPDATE messages SET `text` = #{text} WHERE id = #{talkId}
+        UPDATE messages SET `text` = #{text} WHERE id = #{messageId}
         """
     )
-    fun updateMessage(talkId: Long, text: String): Message
+    fun updateMessage(messageId: Long, text: String): Message
 
     @Delete(
         """
-        DELETE FROM messages WHERE id = #{talkId}
+        DELETE FROM messages WHERE id = #{messageId}
         """
     )
-    fun deleteMessage(talkId: Long): Boolean
+    fun deleteMessage(messageId: Long): Boolean
 }
