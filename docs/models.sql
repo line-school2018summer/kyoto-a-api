@@ -24,7 +24,7 @@ create table users_rooms (
     FOREIGN KEY (room_id) REFERENCES Rooms(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
-create table talks (
+create table messages (
     id bigint(13) NOT NULL PRIMARY KEY AUTO_INCREMENT,
     room_id bigint(13) NOT NULL,
     user_id bigint(13) NOT NULL,
