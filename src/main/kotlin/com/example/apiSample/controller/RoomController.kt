@@ -42,7 +42,7 @@ class RoomController(private val roomService: RoomService,
     fun createRoom(@RequestBody request: PostRoomRequest): Room {
         val Room: Room = roomService.createRoom(request.name)
         request.userIds.forEach {
-            roomService.createUserRoom(it, Room.id)
+            roomService.addMember(it, Room.id)
         }
         return Room
     }
@@ -67,9 +67,9 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun createUserRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+    fun addMembers(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
         request.userIds.forEach {
-            roomService.createUserRoom(it, roomId)
+            roomService.addMember(it, roomId)
         }
         return roomService.getRoomFromId(roomId)
     }
@@ -78,9 +78,9 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun deleteUserRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+    fun removeMembers(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
         request.userIds.forEach {
-            roomService.deleteUserRoom(it, roomId)
+            roomService.removeMember(it, roomId)
         }
         return roomService.getRoomFromId(roomId)
     }
