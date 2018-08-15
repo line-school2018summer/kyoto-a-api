@@ -20,11 +20,11 @@ class FirebaseGatewayTests{
         //初期化
         val auth = FirebaseGateway()
 
-        //CASE1 : jwtの形式でない場合はnullが返ってくる。
+        //CASE1 : jwtの形式でない場合はnullが返ってくる。例外のログが出力される。
         var token  = "hogehoge"
         assertEquals(null,auth.verifyIdToken((token)))
 
-      //CASE2 : 有効期限切れのトークンの場合はnullが返ってくる。
+      //CASE2 : 有効期限切れのトークンの場合はnullが返ってくる。例外のログが出力される。
         token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImZmNTRmZjM0MTFiZmMwMDJiYTBjZDAwNzA2YmEzYmM4NTBiZWIwMmIifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGluZS1zdW1tZXIta3lvdG8tYSIsImF1ZCI6ImxpbmUtc3VtbWVyLWt5b3RvLWEiLCJhdXRoX3RpbWUiOjE1MzM5MTUxODgsInVzZXJfaWQiOiJYNG9SUFdKclFVYnZRd0ZMekY5bDk4cGN6ZGgxIiwic3ViIjoiWDRvUlBXSnJRVWJ2UXdGTHpGOWw5OHBjemRoMSIsImlhdCI6MTUzMzkxNTE4OCwiZXhwIjoxNTMzOTE4Nzg4LCJlbWFpbCI6ImhvZ2VAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImhvZ2VAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.U66QQ6jhWj0oh3azCVseFYsNJjwmtPB02e7W83elz91A2flwoO8nHCcoJ8oykpPIQFotKO3LZmrrP9-r0WGxxfQ-a34d7Be6HA1QfGy0_Hc0K8e_i_aObzP3gkVs8-08qbjFL2VfEmbkTh5wncMUpEAwGWCR4cWD99T3i9DzjksssYiNUXC7qHynbe_XRystZJmTWpd34HtatjXlUdS76CrSOGmxp-y9mGAlZg5DdvWQB5eefX25vd62-wZGwNUdK1YMK5FhQKaDvViUTejCqAaezhhIIcc62-TIA3YT5xcWTWM9ITKArPRP6z_pUun1_3wF532Fjq2qtyeFscO-UQ"
         assertEquals(null,auth.verifyIdToken((token)))
 

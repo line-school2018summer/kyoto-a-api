@@ -5,7 +5,7 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.auth.oauth2.GoogleCredentials
 import org.springframework.stereotype.Component
-
+import org.slf4j.LoggerFactory
 
 interface AuthGateway{
     fun verifyIdToken(id_token: String): String?
@@ -14,9 +14,9 @@ interface AuthGateway{
 @Component
 class  FirebaseGateway : AuthGateway{
 
+    val logger = LoggerFactory.getLogger(FirebaseGateway::class.java)
 
     init {
-
         val firebase_account_path = "/line-summer-kyoto-a-firebase-adminsdk-ei5yu-5a45cf67ce.json"
         val databaseUrl = "https://line-summer-yoto-a.firebaseio.com/"
 
@@ -43,7 +43,7 @@ class  FirebaseGateway : AuthGateway{
             return uid
         }
         catch(e: Exception){
-            println(e.toString())
+            logger.info("error",e)
             return null
 
         }
