@@ -67,21 +67,40 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun addMembers(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+    fun updateMembers(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+        val members: ArrayList<UserList> = roomService.getMembers(roomId)
+        members.forEach{
+            if (!request.userIds.contains(it.id)){
+                roomService.removeMember(it.id, roomId)
+            }
+        }
         request.userIds.forEach {
-            roomService.addMember(it, roomId)
+            if (roomService.getUserRoom(it, roomId).isEmpty()) {
+                roomService.addMember(it, roomId)
+            }
         }
         return roomService.getRoomFromId(roomId)
     }
 
-    @DeleteMapping(
-            value = ["/rooms/{id}/members"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-    )
-    fun removeMembers(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
-        request.userIds.forEach {
-            roomService.removeMember(it, roomId)
-        }
-        return roomService.getRoomFromId(roomId)
-    }
+//    @PutMapping(
+//            value = ["/rooms/{id}/members"],
+//            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+//    )
+//    fun addMembers(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+//        request.userIds.forEach {
+//            roomService.addMember(it, roomId)
+//        }
+//        return roomService.getRoomFromId(roomId)
+//    }
+//
+//    @DeleteMapping(
+//            value = ["/rooms/{id}/members"],
+//            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+//    )
+//    fun removeMembers(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+//        request.userIds.forEach {
+//            roomService.removeMember(it, roomId)
+//        }
+//        return roomService.getRoomFromId(roomId)
+//    }
 }

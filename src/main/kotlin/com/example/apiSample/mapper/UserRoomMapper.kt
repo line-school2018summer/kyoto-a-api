@@ -19,6 +19,13 @@ interface UserRoomMapper {
     )
     fun findByRoomId(roomId: Long): ArrayList<UserRoom>
 
+    @Select(
+            """
+        SELECT user_id, room_id FROM users_rooms WHERE user_id=#{userId} AND room_id=#{roomId}
+        """
+    )
+    fun findByUserAndRoomId(userId: Long, roomId: Long): ArrayList<UserRoom>
+
     @Insert(
             """
         INSERT INTO users_rooms(user_id, room_id) VALUES(#{userId}, #{roomId})

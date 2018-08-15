@@ -24,6 +24,11 @@ class RoomService(private val roomMapper: RoomMapper,
         return rooms
     }
 
+    fun getUserRoom(userId: Long, roomId: Long): ArrayList<UserRoom> {
+        val userRoom = userRoomMapper.findByUserAndRoomId(userId, roomId)
+        return userRoom
+    }
+
     fun getMembers(roomId: Long): ArrayList<UserList> {
         val members = userMapper.findByRoomId(roomId)
         return members
