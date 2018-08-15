@@ -8,35 +8,35 @@ import org.apache.ibatis.annotations.*
 interface RoomMapper {
     @Select(
             """
-        SELECT id, name, created_at, updated_at FROM rooms WHERE id=#{roomId}
+        SELECT id, `name`, created_at, updated_at FROM Rooms WHERE id=#{roomId}
         """
     )
     fun findByRoomId(roomId: Long): Room
 
     @Select(
             """
-        SELECT rooms.id, rooms.name FROM userRooms left join rooms on userRooms.room_id=rooms.id WHERE userRooms.user_id=#{userId}
+        SELECT Rooms.id, Rooms.`name` FROM UserRooms LEFT JOIN Rooms ON UserRooms.room_id=Rooms.id WHERE UserRooms.user_id=#{userId}
         """
     )
     fun findByUserId(userId: Long): ArrayList<RoomList>
 
     @Insert(
             """
-        INSERT INTO rooms(name) VALUES(#{name})
+        INSERT INTO Rooms(`name`) VALUES(#{name})
         """
     )
     fun createRoom(name: String): Room
 
     @Update(
             """
-        UPDATE rooms SET name = #{name} WHERE id = #{roomId}
+        UPDATE Rooms SET `name` = #{name} WHERE id = #{roomId}
         """
     )
     fun updateRoom(roomId: Long, name: String): Room
 
     @Delete(
             """
-        DELETE FROM rooms WHERE id = #{roomId}
+        DELETE FROM Rooms WHERE id = #{roomId}
         """
     )
     fun deleteRoom(roomId: Long): Boolean
