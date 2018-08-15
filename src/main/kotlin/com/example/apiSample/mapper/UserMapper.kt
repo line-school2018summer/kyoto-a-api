@@ -31,7 +31,7 @@ interface UserMapper {
 
     @Select(
             """
-        SELECT Users.id, Users.`name` FROM UserRooms LEFT JOIN Users ON UserRooms.user_id=Users.id WHERE UserRooms.room_id=#{roomId}
+        SELECT users.id, users.uid, users.`name` FROM users_rooms LEFT JOIN users ON users_rooms.user_id=users.id WHERE users_rooms.room_id=#{roomId}
         """
     )
     fun findByRoomId(roomId: Long): ArrayList<UserList>

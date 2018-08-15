@@ -7,28 +7,28 @@ import org.apache.ibatis.annotations.*
 interface UserRoomMapper {
     @Select(
             """
-        SELECT user_id, room_id FROM UserRooms WHERE user_id=#{userId}
+        SELECT user_id, room_id FROM users_rooms WHERE user_id=#{userId}
         """
     )
     fun findByUserId(userId: Long): ArrayList<UserRoom>
 
     @Select(
             """
-        SELECT user_id, room_id FROM UserRooms WHERE room_id=#{roomId}
+        SELECT user_id, room_id FROM users_rooms WHERE room_id=#{roomId}
         """
     )
     fun findByRoomId(roomId: Long): ArrayList<UserRoom>
 
     @Insert(
             """
-        INSERT INTO UserRooms(user_id, room_id) VALUES(#{userId}, #{roomId})
+        INSERT INTO users_rooms(user_id, room_id) VALUES(#{userId}, #{roomId})
         """
     )
     fun addMember(userId: Long, roomId: Long): UserRoom
 
     @Delete(
             """
-        DELETE FROM UserRooms WHERE user_id = #{userId} AND room_id = #{roomId}
+        DELETE FROM users_rooms WHERE user_id = #{userId} AND room_id = #{roomId}
         """
     )
     fun removeMember(userId: Long, roomId: Long): Boolean

@@ -15,8 +15,7 @@ data class PostRoomRequest(
 
 @RestController
 class RoomController(private val roomService: RoomService,
-                     private val userService: UserService,
-                     private val auth: FirebaseGateway) {
+                     private val userService: UserService) {
     @GetMapping(
             value = ["/rooms/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -25,16 +24,16 @@ class RoomController(private val roomService: RoomService,
         return roomService.getRoomFromId(roomId)
     }
 
-    @GetMapping(
-            value = ["/rooms"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-    )
-    fun getRooms(@RequestHeader(value="Token", required=true)token: String): ArrayList<RoomList> {
-        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
-        val user = userService.findByUid(uid)
-        val Rooms: ArrayList<RoomList> = roomService.getRoomsFromUserId(user.id)
-        return Rooms
-    }
+//    @GetMapping(
+//            value = ["/rooms"],
+//            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+//    )
+//    fun getRooms(@RequestHeader(value="Token", required=true)token: String): ArrayList<RoomList> {
+//        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
+//        val user = userService.findByUid(uid)
+//        val Rooms: ArrayList<RoomList> = roomService.getRoomsFromUserId(user.id)
+//        return Rooms
+//    }
 
     @PostMapping(
             value = ["/rooms"],
@@ -60,7 +59,7 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getMember(@PathVariable("id" ) roomId: Long): ArrayList<UserList> {
+    fun getMembers(@PathVariable("id" ) roomId: Long): ArrayList<UserList> {
         return roomService.getMembers(roomId)
     }
 
