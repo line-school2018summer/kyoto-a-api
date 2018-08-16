@@ -1,7 +1,7 @@
 package com.example.apiSample.mapper
 
-import com.example.apiSample.model.User
 import com.example.apiSample.model.UserProfile
+import com.example.apiSample.model.User
 import com.example.apiSample.model.UserList
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
@@ -21,4 +21,11 @@ interface UserMapper {
         """
     )
     fun findByUid(uid: String): User?
+
+    @Select(
+            """
+        SELECT users.id, users.`name` FROM users_rooms LEFT JOIN users ON users_rooms.user_id=users.id WHERE users_rooms.room_id=#{roomId}
+        """
+    )
+    fun findByRoomId(roomId: Long): ArrayList<UserList>
 }
