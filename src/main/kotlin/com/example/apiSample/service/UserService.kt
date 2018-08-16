@@ -1,5 +1,6 @@
 package com.example.apiSample.service
 
+import com.example.apiSample.controller.BadRequestException
 import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.model.User
 import com.example.apiSample.model.UserList
@@ -13,6 +14,6 @@ class UserService(private val userMapper: UserMapper) {
     }
 
     fun findByUid(uid: String): User {
-        return userMapper.findByUid(uid)
+        return userMapper.findByUid(uid) ?: throw BadRequestException("no user found")
     }
 }

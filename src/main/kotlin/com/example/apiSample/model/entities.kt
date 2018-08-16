@@ -41,3 +41,19 @@ data class UserRoom(
         var userId: Long,
         var roomId: Long
 )
+
+data class Message(
+        var id: Long,
+        var room_id: Long,
+        var user_id: Long,
+        var text: String,
+        @get:JsonProperty("created_at") var createdAt: Timestamp,
+        @get:JsonProperty("updated_at") var updatedAt: Timestamp
+        )
+
+data class MessageList(
+        var id: Long,
+        var room_id: Long,
+        var user_id: Long,
+        var text: String
+)

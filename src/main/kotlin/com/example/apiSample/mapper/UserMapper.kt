@@ -10,24 +10,17 @@ import org.apache.ibatis.annotations.Select
 interface UserMapper {
     @Select(
         """
-        SELECT id, name, email, created_at, updated_at FROM users WHERE id=#{userId}
-        """
-    )
-    fun findByUserId(userId: Long): UserProfile
-
-    @Select(
-        """
-        SELECT id, uid, name FROM users WHERE name LIKE CONCAT('%', #{searchStr}, '%')
+        SELECT id, name, email FROM users WHERE name LIKE CONCAT('%', #{searchStr}, '%')
         """
     )
     fun findBySearchStr(searchStr: String): ArrayList<UserList>
 
     @Select(
-            """
+        """
         SELECT id, uid, name, created_at, updated_at FROM users WHERE uid = #{uid}
         """
     )
-    fun findByUid(uid: String): User
+    fun findByUid(uid: String): User?
 
     @Select(
             """
