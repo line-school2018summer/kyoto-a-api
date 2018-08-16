@@ -86,6 +86,7 @@ class RoomController(private val messageService: MessageService, private val use
         }
         return roomService.getRoomFromId(roomId)
     }
+
     @GetMapping(
             value = ["/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
