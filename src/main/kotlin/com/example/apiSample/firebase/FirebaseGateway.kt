@@ -17,11 +17,7 @@ class  FirebaseGateway : AuthGateway{
     val logger = LoggerFactory.getLogger(FirebaseGateway::class.java)
 
     companion object {
-        var isInitialized = false
-    }
-
-    init {
-        if (!isInitialized) {
+        init {
             val firebase_account_path = "/line-summer-kyoto-a-firebase-adminsdk-ei5yu-5a45cf67ce.json"
             val databaseUrl = "https://line-summer-yoto-a.firebaseio.com/"
 
@@ -33,7 +29,6 @@ class  FirebaseGateway : AuthGateway{
                     .build()
 
             FirebaseApp.initializeApp(options)
-            isInitialized = true
         }
     }
 
