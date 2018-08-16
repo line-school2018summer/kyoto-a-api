@@ -20,8 +20,8 @@ create table users_rooms (
     id bigint(13) NOT NULL PRIMARY KEY AUTO_INCREMENT,
     user_id bigint(13) NOT NULL,
     room_id bigint(13) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(id),
-    FOREIGN KEY (room_id) REFERENCES Rooms(id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (room_id) REFERENCES rooms(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 create table messages (
@@ -31,6 +31,6 @@ create table messages (
     `text` longtext NOT NULL,
     created_at datetime NOT NULL default current_timestamp,
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(id),
-    FOREIGN KEY (room_id) REFERENCES Rooms(id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (room_id) REFERENCES rooms(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
