@@ -31,7 +31,7 @@ interface UserRoomMapper {
         INSERT INTO users_rooms(user_id, room_id) VALUES(#{userId}, #{roomId})
         """
     )
-    fun addMember(userId: Long, roomId: Long): UserRoom
+    fun addMember(userId: Long, roomId: Long): Long
 
     @Delete(
             """

@@ -32,7 +32,7 @@ interface RoomMapper {
         UPDATE rooms SET `name` = #{name} WHERE id = #{roomId}
         """
     )
-    fun updateRoom(roomId: Long, name: String): Room
+    fun updateRoom(roomId: Long, name: String): Long
 
     @Delete(
             """

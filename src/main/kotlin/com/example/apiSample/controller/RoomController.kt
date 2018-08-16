@@ -51,7 +51,7 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms/{id}/name"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun updateRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+    fun updateRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Long {
         return roomService.updateRoom(roomId, request.name)
     }
 

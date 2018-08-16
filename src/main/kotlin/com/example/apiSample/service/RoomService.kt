@@ -39,14 +39,12 @@ class RoomService(private val roomMapper: RoomMapper,
         return room
     }
 
-    fun addMember(userId: Long, roomId: Long): UserRoom {
-        val userRoom = userRoomMapper.addMember(userId, roomId)
-        return userRoom
+    fun addMember(userId: Long, roomId: Long): Long {
+        return userRoomMapper.addMember(userId, roomId)
     }
 
-    fun updateRoom(roomId: Long, name: String): Room {
-        val room = roomMapper.updateRoom(roomId, name)
-        return room
+    fun updateRoom(roomId: Long, name: String): Long {
+        return roomMapper.updateRoom(roomId, name)
     }
 
     fun deleteRoom(roomId: Long): Boolean {
