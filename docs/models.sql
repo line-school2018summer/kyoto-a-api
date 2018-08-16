@@ -1,4 +1,4 @@
-create database `kyoto-a`;
+CREATE DATABASE IF NOT EXISTS `kyoto-a`;
 use `kyoto-a`;
 
 create table users (
@@ -6,7 +6,8 @@ create table users (
     `uid` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL,
     `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL,
     created_at datetime default current_timestamp,
-    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 create table rooms (
@@ -21,7 +22,9 @@ create table users_rooms (
     user_id bigint(13) NOT NULL,
     room_id bigint(13) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (room_id) REFERENCES rooms(id)
+    FOREIGN KEY (room_id) REFERENCES rooms(id),
+    UNIQUE (room_id, user_id)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 create table messages (

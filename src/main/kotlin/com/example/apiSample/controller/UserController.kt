@@ -2,19 +2,15 @@ package com.example.apiSample.controller
 
 import com.example.apiSample.firebase.AuthGateway
 import com.example.apiSample.model.NonUidUser
-import com.example.apiSample.model.User
-import com.example.apiSample.model.UserList
-import com.example.apiSample.service.UserProfileService
 import com.example.apiSample.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import javax.websocket.server.PathParam
 
 
 data class UserListResponse(
         var id: Long,
-        var name: String,
-        var email: String
+        var uid: String,
+        var name: String
 )
 
 data class PostSearchRequest(
@@ -22,8 +18,7 @@ data class PostSearchRequest(
 )
 
 @RestController
-class UserController(private val userProfileService: UserProfileService,
-                     private val userService: UserService,
+class UserController(private val userService: UserService,
                      private val auth: AuthGateway) {
 
     @PostMapping(
@@ -72,22 +67,4 @@ class UserController(private val userProfileService: UserProfileService,
     fun findById(@PathVariable("id")id: Long): NonUidUser{
         return userService.findById(id)
     }
-/*
-    //まだ実装していません（apiSampleのまま）
-    @PostMapping(
-            value = ["/user/search"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-    )
-    fun getList(@RequestBody request: PostSearchRequest): Map<String, List<UserListResponse>> {
-        val userList: ArrayList<UserList> = userService.findUsersList(request.search_str)
-        return mapOf("results" to userList.map {
-            UserListResponse(
-                    id = it.id,
-                    name = it.name,
-                    email = it.email
-            )
-        })
-    }
-    */
-
 }

@@ -1,5 +1,6 @@
 package com.example.apiSample.service
 
+import com.example.apiSample.controller.BadRequestException
 import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.model.NonUidUser
 import com.example.apiSample.model.User
@@ -8,10 +9,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(private val userMapper: UserMapper) {
-
-    fun findByUid(uid: String): User {
-        return userMapper.findByUid(uid)
-    }
 
     //Userのリスト返却
     fun getUserList(): ArrayList<NonUidUser>{
@@ -31,5 +28,9 @@ class UserService(private val userMapper: UserMapper) {
         userMapper.create(uid, name)
         val id = userMapper.findByUid(uid).id
         return userMapper.findById(id)
+    }
+
+    fun findByUid(uid: String): User {
+        return userMapper.findByUid(uid) ?: throw BadRequestException("no user found")
     }
 }
