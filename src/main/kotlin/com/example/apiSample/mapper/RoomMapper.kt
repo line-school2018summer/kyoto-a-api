@@ -2,6 +2,7 @@ package com.example.apiSample.mapper
 
 import com.example.apiSample.model.Room
 import com.example.apiSample.model.RoomList
+import com.example.apiSample.service.InsertRoom
 import org.apache.ibatis.annotations.*
 
 @Mapper
@@ -11,7 +12,7 @@ interface RoomMapper {
         SELECT id, `name`, created_at, updated_at FROM rooms WHERE id=#{roomId}
         """
     )
-    fun findByRoomId(roomId: Long): Room
+    fun findByRoomId(roomId: Long): Room?
 
     @Select(
             """
@@ -25,7 +26,10 @@ interface RoomMapper {
         INSERT INTO rooms(`name`) VALUES(#{name})
         """
     )
-    fun createRoom(name: String): Room
+    @SelectKey(
+            statement=["select LAST_INSERT_ID()"], keyProperty="id", before=false, resultType=Int::class
+    )
+    fun createRoom(room: InsertRoom): Long
 
     @Update(
             """

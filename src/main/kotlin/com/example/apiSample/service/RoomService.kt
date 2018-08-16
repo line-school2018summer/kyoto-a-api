@@ -1,5 +1,6 @@
 package com.example.apiSample.service
 
+import com.example.apiSample.controller.BadRequestException
 import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.mapper.RoomMapper
 import com.example.apiSample.mapper.UserRoomMapper
@@ -9,13 +10,19 @@ import com.example.apiSample.model.RoomList
 import com.example.apiSample.model.UserRoom
 import org.springframework.stereotype.Service
 
+data class InsertRoom (
+        var id: Long = 0,
+        var name: String
+)
+
 @Service
 class RoomService(private val roomMapper: RoomMapper,
                   private val userRoomMapper: UserRoomMapper,
                   private val userMapper: UserMapper) {
 
     fun getRoomFromId(roomId: Long): Room {
-        val room = roomMapper.findByRoomId(roomId)
+        val room: Room? = roomMapper.findByRoomId(roomId)
+        room ?: throw BadRequestException("There is no room")
         return room
     }
 
@@ -35,7 +42,11 @@ class RoomService(private val roomMapper: RoomMapper,
     }
 
     fun createRoom(name: String): Room {
-        val room = roomMapper.createRoom(name)
+        var roomInserted = InsertRoom(
+                name = name
+        )
+        roomMapper.createRoom(roomInserted)
+        val room = this.getRoomFromId(roomInserted.id)
         return room
     }
 

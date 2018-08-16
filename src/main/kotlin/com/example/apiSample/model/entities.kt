@@ -1,6 +1,7 @@
 package com.example.apiSample.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.intellij.lang.annotations.Identifier
 import java.sql.Timestamp
 
 data class UserProfile(

@@ -24,35 +24,36 @@ class RoomController(private val roomService: RoomService,
         return roomService.getRoomFromId(roomId)
     }
 
-//    @GetMapping(
-//            value = ["/rooms"],
-//            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-//    )
-//    fun getRooms(@RequestHeader(value="Token", required=true)token: String): ArrayList<RoomList> {
+    @GetMapping(
+            value = ["/rooms"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getRooms(@RequestHeader(value="Token", required=true)token: String): ArrayList<RoomList> {
 //        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
 //        val user = userService.findByUid(uid)
-//        val Rooms: ArrayList<RoomList> = roomService.getRoomsFromUserId(user.id)
-//        return Rooms
-//    }
+        val Rooms: ArrayList<RoomList> = roomService.getRoomsFromUserId(1)
+        return Rooms
+    }
 
     @PostMapping(
             value = ["/rooms"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun createRoom(@RequestBody request: PostRoomRequest): Room {
-        val Room: Room = roomService.createRoom(request.name)
+        val room = roomService.createRoom(request.name)
         request.userIds.forEach {
-            roomService.addMember(it, Room.id)
+            roomService.addMember(it, room.id)
         }
-        return Room
+        return roomService.getRoomFromId(room.id)
     }
 
     @PutMapping(
             value = ["/rooms/{id}/name"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun updateRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Long {
-        return roomService.updateRoom(roomId, request.name)
+    fun updateRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+        roomService.updateRoom(roomId, request.name)
+        return roomService.getRoomFromId(roomId)
     }
 
     @GetMapping(
