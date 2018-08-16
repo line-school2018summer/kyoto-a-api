@@ -1,4 +1,4 @@
-create database `kyoto-a`;
+CREATE DATABASE IF NOT EXISTS `kyoto-a`;
 use `kyoto-a`;
 
 create table users (
