@@ -42,14 +42,6 @@ data class UserRoom(
         var roomId: Long
 )
 
-data class User(
-        var id: Long,
-        var uid: String,
-        var name: String,
-        @get:JsonProperty("created_at") var createdAt: Timestamp,
-        @get:JsonProperty("updated_at") var updatedAt: Timestamp
-)
-
 data class Message(
         var id: Long,
         var room_id: Long,

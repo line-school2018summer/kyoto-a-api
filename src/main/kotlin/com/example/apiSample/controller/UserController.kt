@@ -27,6 +27,4 @@ class UserController(private val userProfileService: UserProfileService, private
         return "{\"greeting\": \"こんにちは!\"}"
     }
 
-    }
-
 }
