@@ -25,3 +25,11 @@ data class User(
     @get:JsonProperty("created_at") var createdAt: Timestamp,
     @get:JsonProperty("updated_at") var updatedAt: Timestamp
 )
+
+data class NonUidUser(
+    var id: Long,
+    //var uid: String,
+    var name: String,
+    @get:JsonProperty("created_at") var createdAt: Timestamp,
+    @get:JsonProperty("updated_at") var updatedAt: Timestamp
+)

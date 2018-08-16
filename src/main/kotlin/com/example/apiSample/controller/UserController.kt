@@ -1,13 +1,15 @@
 package com.example.apiSample.controller
 
+import com.example.apiSample.firebase.AuthGateway
+import com.example.apiSample.model.NonUidUser
 import com.example.apiSample.model.User
-import com.example.apiSample.model.UserProfile
 import com.example.apiSample.model.UserList
 import com.example.apiSample.service.UserProfileService
 import com.example.apiSample.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import javax.websocket.server.PathParam
+
 
 data class UserListResponse(
         var id: Long,
@@ -22,17 +24,13 @@ data class PostSearchRequest(
 @RestController
 class UserController(private val userProfileService: UserProfileService,
                      private val userService: UserService,
-                     private val auth: FirebaseGateway) {
-
-    init {
-      auth.authInit()
-    }
+                     private val auth: AuthGateway) {
 
     @GetMapping(
             value = ["/users"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getUserList(): ArrayList<User>{
+    fun getUserList(): ArrayList<NonUidUser>{
         return userService.getUserList()
     }
 
@@ -40,7 +38,7 @@ class UserController(private val userProfileService: UserProfileService,
             value = ["/users/me"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getUserInfoById(@RequestHeader(value="Token", required=true)token: String): User {
+    fun getUserInfoById(@RequestHeader(value="Token", required=true)token: String): NonUidUser {
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
         val id = userService.findByUid(uid).id
         return userService.findById(id)
@@ -51,20 +49,20 @@ class UserController(private val userProfileService: UserProfileService,
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun updateName(@RequestHeader(value="Token", required=true)token: String,
-                   @PathParam("name") changedName: String): Unit {
+                   @RequestParam("name") changedName: String): NonUidUser {
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
         val id = userService.findByUid(uid).id
-        userService.updateName(id, changedName)
+        return userService.updateName(id, changedName)
     }
 
     @GetMapping(
             value = ["/users/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun findById(@PathVariable("id")id: Long): User{
+    fun findById(@PathVariable("id")id: Long): NonUidUser{
         return userService.findById(id)
     }
-
+/*
     //まだ実装していません（apiSampleのまま）
     @PostMapping(
             value = ["/user/search"],
@@ -80,5 +78,6 @@ class UserController(private val userProfileService: UserProfileService,
             )
         })
     }
+    */
 
 }

@@ -56,6 +56,7 @@ class FirebaseGatewayTests{
 
         //検証
         token = JSONObject(result).getString("idToken")
+        println(token)
         assertEquals("X4oRPWJrQUbvQwFLzF9l98pczdh1",auth.verifyIdToken(token))
     }
 }

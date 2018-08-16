@@ -1,5 +1,6 @@
 package com.example.apiSample.mapper
 
+import com.example.apiSample.model.NonUidUser
 import com.example.apiSample.model.User
 import com.example.apiSample.model.UserProfile
 import com.example.apiSample.model.UserList
@@ -13,10 +14,10 @@ interface UserMapper {
     //全ユーザのリストを返します
     @Select(
         """
-        SELECT id, uid, name, created_at, updated_at FROM users
+        SELECT id, name, created_at, updated_at FROM users
         """
     )
-    fun getUserList(): ArrayList<User>
+    fun getUserList(): ArrayList<NonUidUser>
 
     @Update(
         """
@@ -34,8 +35,9 @@ interface UserMapper {
 
     @Select(
         """
-        SELECT id, uid, name, created_at, updated_at FROM users WHERE id=#{id}
+        SELECT id, name, created_at, updated_at FROM users WHERE id=#{id}
         """
     )
-    fun findById(id: Long): User
+    fun findById(id: Long): NonUidUser
+
 }
