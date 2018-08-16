@@ -26,7 +26,7 @@ class RoomController(private val messageService: MessageService, private val use
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun createMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") roomId: Long, @RequestBody request: PostMessageRequest): Message {
-        val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("")
+        val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("invailed token")
         val user = userService.findByUid(uid)
         val message: Message = messageService.createMessage(roomId, user.id, request.text)
         return message
