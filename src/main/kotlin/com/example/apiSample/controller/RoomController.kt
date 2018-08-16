@@ -1,5 +1,6 @@
 package com.example.apiSample.controller
 
+import com.example.apiSample.firebase.AuthGateway
 import com.example.apiSample.model.UserList
 import com.example.apiSample.model.Room
 import com.example.apiSample.model.RoomList
@@ -15,7 +16,8 @@ data class PostRoomRequest(
 
 @RestController
 class RoomController(private val roomService: RoomService,
-                     private val userService: UserService) {
+                     private val userService: UserService,
+                     private val authGateway: AuthGateway) {
     @GetMapping(
             value = ["/rooms/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -29,9 +31,9 @@ class RoomController(private val roomService: RoomService,
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun getRooms(@RequestHeader(value="Token", required=true)token: String): ArrayList<Room> {
-//        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
-//        val user = userService.findByUid(uid)
-        val Rooms: ArrayList<Room> = roomService.getRoomsFromUserId(1)
+        val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
+        val user = userService.findByUid(uid)
+        val Rooms: ArrayList<Room> = roomService.getRoomsFromUserId(user.id)
         return Rooms
     }
 
@@ -39,7 +41,12 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun createRoom(@RequestBody request: PostRoomRequest): Room {
+    fun createRoom(@RequestHeader(value="Token", required=true)token: String, @RequestBody request: PostRoomRequest): Room {
+        val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
+        val user = userService.findByUid(uid)
+        if (!request.userIds.contains(user.id)) {
+            throw BadRequestException("You must join group")
+        }
         val room = roomService.createRoom(request.name)
         request.userIds.forEach {
             roomService.addMember(it, room.id)
@@ -51,7 +58,12 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms/{id}/name"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun updateRoom(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+    fun updateRoom(@RequestHeader(value="Token", required=true)token: String, @PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+        val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
+        val user = userService.findByUid(uid)
+        if (!roomService.isUserExist(user.id, roomId)) {
+            throw BadRequestException("has no permission")
+        }
         roomService.updateRoom(roomId, request.name)
         return roomService.getRoomFromId(roomId)
     }
@@ -68,7 +80,12 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun updateMembers(@PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+    fun updateMembers(@RequestHeader(value="Token", required=true)token: String, @PathVariable("id") roomId: Long, @RequestBody request: PostRoomRequest): Room {
+        val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
+        val user = userService.findByUid(uid)
+        if (!roomService.isUserExist(user.id, roomId)) {
+            throw BadRequestException("has no permission")
+        }
         val members: ArrayList<UserList> = roomService.getMembers(roomId)
         members.forEach{
             if (!request.userIds.contains(it.id)){
