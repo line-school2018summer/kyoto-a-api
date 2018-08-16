@@ -26,7 +26,7 @@ class UserService(private val userMapper: UserMapper) {
 
     fun create(uid: String, name: String): NonUidUser{
         userMapper.create(uid, name)
-        val id = userMapper.findByUid(uid).id
+        val id = userMapper.findByUid(uid)?.id ?: throw BadRequestException("cannot create user.")
         return userMapper.findById(id)
     }
 
