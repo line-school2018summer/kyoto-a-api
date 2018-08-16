@@ -21,7 +21,8 @@ create table users_rooms (
     user_id bigint(13) NOT NULL,
     room_id bigint(13) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (room_id) REFERENCES rooms(id)
+    FOREIGN KEY (room_id) REFERENCES rooms(id),
+    UNIQUE (room_id, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 create table messages (
