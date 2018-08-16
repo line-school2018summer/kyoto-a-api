@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*
 
 data class UserListResponse(
         var id: Long,
-        var name: String,
-        var email: String
+        var uid: String,
+        var name: String
 )
 
 data class PostSearchRequest(
@@ -33,21 +33,6 @@ class UserController(private val userProfileService: UserProfileService, private
     )
     fun getProfile(@PathVariable("id" ) userId: Long): UserProfile {
         return userProfileService.getProfile(userId)
-    }
-
-    @PostMapping(
-            value = ["/user/search"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-    )
-    fun getList(@RequestBody request: PostSearchRequest): Map<String, List<UserListResponse>> {
-        val userList: ArrayList<UserList> = userService.findUsersList(request.search_str)
-        return mapOf("results" to userList.map {
-            UserListResponse(
-                    id = it.id,
-                    name = it.name,
-                    email = it.email
-            )
-        })
     }
 
 }
