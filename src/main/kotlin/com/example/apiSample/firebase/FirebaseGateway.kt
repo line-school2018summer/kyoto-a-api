@@ -17,24 +17,26 @@ class  FirebaseGateway : AuthGateway{
     val logger = LoggerFactory.getLogger(FirebaseGateway::class.java)
 
     companion object {
-        var isInitialized = false
+        init {
+            var isInitialized = false
+
+            if (!isInitialized) {
+                val firebase_account_path = "/line-summer-kyoto-a-firebase-adminsdk-ei5yu-5a45cf67ce.json"
+                val databaseUrl = "https://line-summer-yoto-a.firebaseio.com/"
+
+                val firebase_account = FirebaseGateway::class.java.getResourceAsStream(firebase_account_path)
+
+                val options = FirebaseOptions.Builder()
+                        .setCredentials(GoogleCredentials.fromStream(firebase_account))
+                        .setDatabaseUrl(databaseUrl)
+                        .build()
+
+                FirebaseApp.initializeApp(options)
+                isInitialized = true
+            }
     }
 
-    init {
-        if (!isInitialized) {
-            val firebase_account_path = "/line-summer-kyoto-a-firebase-adminsdk-ei5yu-5a45cf67ce.json"
-            val databaseUrl = "https://line-summer-yoto-a.firebaseio.com/"
 
-            val firebase_account = FirebaseGateway::class.java.getResourceAsStream(firebase_account_path)
-
-            val options = FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(firebase_account))
-                    .setDatabaseUrl(databaseUrl)
-                    .build()
-
-            FirebaseApp.initializeApp(options)
-            isInitialized = true
-        }
     }
 
     /*引数
