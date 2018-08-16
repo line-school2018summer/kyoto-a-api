@@ -32,7 +32,6 @@ class MessageService(private val messageMapper: MessageMapper) {
                 user_id = userId,
                 text = text
         )
-        // TODO: check "ユーザーがルームに入っているか"
         messageMapper.createMessage(messageInserted)
         val message = this.getMessageFromId(messageInserted.id)
         return message
