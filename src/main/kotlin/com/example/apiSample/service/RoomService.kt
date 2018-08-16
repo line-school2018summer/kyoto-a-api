@@ -22,7 +22,7 @@ class RoomService(private val roomMapper: RoomMapper,
 
     fun getRoomFromId(roomId: Long): Room {
         val room: Room? = roomMapper.findByRoomId(roomId)
-        room ?: throw BadRequestException("There is no room")
+        room ?: throw BadRequestException("no room found")
         return room
     }
 
