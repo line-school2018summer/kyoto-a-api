@@ -16,10 +16,10 @@ interface RoomMapper {
 
     @Select(
             """
-        SELECT rooms.id, rooms.`name` FROM users_rooms LEFT JOIN rooms ON users_rooms.room_id=rooms.id WHERE users_rooms.user_id=#{userId}
+        SELECT rooms.id, rooms.`name`, created_at, updated_at FROM users_rooms LEFT JOIN rooms ON users_rooms.room_id=rooms.id WHERE users_rooms.user_id=#{userId}
         """
     )
-    fun findByUserId(userId: Long): ArrayList<RoomList>
+    fun findByUserId(userId: Long): ArrayList<Room>
 
     @Insert(
             """

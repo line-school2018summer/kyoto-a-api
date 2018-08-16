@@ -28,10 +28,10 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getRooms(@RequestHeader(value="Token", required=true)token: String): ArrayList<RoomList> {
+    fun getRooms(@RequestHeader(value="Token", required=true)token: String): ArrayList<Room> {
 //        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
 //        val user = userService.findByUid(uid)
-        val Rooms: ArrayList<RoomList> = roomService.getRoomsFromUserId(1)
+        val Rooms: ArrayList<Room> = roomService.getRoomsFromUserId(1)
         return Rooms
     }
 

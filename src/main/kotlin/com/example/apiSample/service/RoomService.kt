@@ -26,7 +26,7 @@ class RoomService(private val roomMapper: RoomMapper,
         return room
     }
 
-    fun getRoomsFromUserId(userId: Long): ArrayList<RoomList> {
+    fun getRoomsFromUserId(userId: Long): ArrayList<Room> {
         val rooms = roomMapper.findByUserId(userId)
         return rooms
     }
@@ -48,6 +48,11 @@ class RoomService(private val roomMapper: RoomMapper,
         roomMapper.createRoom(roomInserted)
         val room = this.getRoomFromId(roomInserted.id)
         return room
+    }
+
+    fun isUserExist(userId: Long, roomId: Long): Boolean {
+        val rooms = roomMapper.findByUserId(userId)
+        return rooms.contains(roomMapper.findByRoomId(roomId))
     }
 
     fun addMember(userId: Long, roomId: Long): Long {
