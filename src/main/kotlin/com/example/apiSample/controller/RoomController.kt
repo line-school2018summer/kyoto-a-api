@@ -1,6 +1,7 @@
 package com.example.apiSample.controller
 
 import com.example.apiSample.Requests.PostMessageRequest
+import com.example.apiSample.firebase.FirebaseGateway
 import com.example.apiSample.model.Message
 import com.example.apiSample.model.MessageList
 import com.example.apiSample.service.MessageService
