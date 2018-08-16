@@ -13,17 +13,17 @@ interface UserMapper {
     //全ユーザのリストを返します
     @Select(
         """
-        SELECT id, uid, name, created_at, updated_at FROM Users
+        SELECT id, uid, name, created_at, updated_at FROM users
         """
     )
     fun getUserList(): ArrayList<User>
 
     @Update(
         """
-        UPDATE Users SET name=#{changedName} WHERE uid=#{uid}
+        UPDATE users SET name=#{changedName} WHERE id=#{id}
         """
     )
-    fun updateName(uid: String, changedName: String): Unit
+    fun updateName(id: Long, changedName: String): Unit
 
     @Select(
         """

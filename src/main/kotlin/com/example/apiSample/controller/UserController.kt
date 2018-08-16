@@ -42,7 +42,8 @@ class UserController(private val userProfileService: UserProfileService,
     )
     fun getUserInfoById(@RequestHeader(value="Token", required=true)token: String): User {
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
-        return userService.findByUid(uid)
+        val id = userService.findByUid(uid).id
+        return userService.findById(id)
     }
 
     @PutMapping(
@@ -52,7 +53,8 @@ class UserController(private val userProfileService: UserProfileService,
     fun updateName(@RequestHeader(value="Token", required=true)token: String,
                    @PathParam("name") changedName: String): Unit {
         val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
-        userService.updateName(uid, changedName)
+        val id = userService.findByUid(uid).id
+        userService.updateName(id, changedName)
     }
 
     @GetMapping(

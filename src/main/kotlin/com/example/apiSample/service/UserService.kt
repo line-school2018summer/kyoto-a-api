@@ -21,7 +21,7 @@ class UserService(private val userMapper: UserMapper) {
         return userMapper.findById(id)
     }
 
-    fun updateName(uid: String, changedName: String): Unit{
-        userMapper.updateName(uid, changedName)
+    fun updateName(id: Long, changedName: String): Unit{
+        userMapper.updateName(id, changedName)
     }
 }
