@@ -35,19 +35,4 @@ class UserController(private val userProfileService: UserProfileService, private
         return userProfileService.getProfile(userId)
     }
 
-    @PostMapping(
-            value = ["/user/search"],
-            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
-    )
-    fun getList(@RequestBody request: PostSearchRequest): Map<String, List<UserListResponse>> {
-        val userList: ArrayList<UserList> = userService.findUsersList(request.search_str)
-        return mapOf("results" to userList.map {
-            UserListResponse(
-                    id = it.id,
-                    uid = it.uid,
-                    name = it.name
-            )
-        })
-    }
-
 }

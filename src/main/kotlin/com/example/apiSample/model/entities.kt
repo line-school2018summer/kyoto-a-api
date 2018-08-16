@@ -22,7 +22,6 @@ data class User(
 
 data class UserList(
         var id: Long,
-        var uid: String,
         var name: String
 )
 
