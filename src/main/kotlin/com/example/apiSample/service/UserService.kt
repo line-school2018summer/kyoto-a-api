@@ -26,4 +26,10 @@ class UserService(private val userMapper: UserMapper) {
         userMapper.updateName(id, changedName)
         return userMapper.findById(id)
     }
+
+    fun create(uid: String, name: String): NonUidUser{
+        userMapper.create(uid, name)
+        val id = userMapper.findByUid(uid).id
+        return userMapper.findById(id)
+    }
 }

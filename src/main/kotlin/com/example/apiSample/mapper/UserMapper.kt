@@ -4,6 +4,7 @@ import com.example.apiSample.model.NonUidUser
 import com.example.apiSample.model.User
 import com.example.apiSample.model.UserProfile
 import com.example.apiSample.model.UserList
+import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
 import org.apache.ibatis.annotations.Update
@@ -40,4 +41,10 @@ interface UserMapper {
     )
     fun findById(id: Long): NonUidUser
 
+    @Insert(
+        """
+        INSERT INTO users (uid, name) VALUES ( #{uid}, #{name})
+        """
+    )
+    fun create(uid: String, name: String)
 }

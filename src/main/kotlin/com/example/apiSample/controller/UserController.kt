@@ -26,6 +26,16 @@ class UserController(private val userProfileService: UserProfileService,
                      private val userService: UserService,
                      private val auth: AuthGateway) {
 
+    @PostMapping(
+            value = ["/users"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun createUser(@RequestHeader(value="Token", required=true)token: String,
+                   @RequestParam("name") name: String): NonUidUser{
+        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
+        return userService.create(uid, name)
+    }
+
     @GetMapping(
             value = ["/users"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
