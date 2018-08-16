@@ -20,5 +20,5 @@ interface UserMapper {
         SELECT id, uid, name, created_at, updated_at FROM users WHERE uid = #{uid}
         """
     )
-    fun findByUid(uid: String): User
+    fun findByUid(uid: String): User?
 }

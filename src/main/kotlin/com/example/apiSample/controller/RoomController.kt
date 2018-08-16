@@ -1,7 +1,7 @@
 package com.example.apiSample.controller
 
 import com.example.apiSample.Requests.PostMessageRequest
-import com.example.apiSample.firebase.FirebaseGateway
+import com.example.apiSample.firebase.AuthGateway
 import com.example.apiSample.model.Message
 import com.example.apiSample.model.MessageList
 import com.example.apiSample.service.MessageService
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-class RoomController(private val messageService: MessageService, private val userService: UserService, private val firebaseGateway: FirebaseGateway) {
+class RoomController(private val messageService: MessageService, private val userService: UserService, private val firebaseGateway: AuthGateway) {
     @GetMapping(
             value = ["/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -28,7 +28,7 @@ class RoomController(private val messageService: MessageService, private val use
     fun createMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") roomId: Long, @RequestBody request: PostMessageRequest): Message {
         val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("")
         val user = userService.findByUid(uid)
-        val message: Message = messageService.createMessage(roomId, 1L, request.text)
+        val message: Message = messageService.createMessage(roomId, user.id, request.text)
         return message
     }
 }
