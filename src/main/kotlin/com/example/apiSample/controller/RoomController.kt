@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-class RoomController(private val messageService: MessageService, private val userService: UserService, private val firebaseGateway: FirebaseGateway) {
+class RoomController(private val messageService: MessageService, private val userService: UserService){ // , private val firebaseGateway: FirebaseGateway) {
     @GetMapping(
             value = ["/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getMessages(@PathVariable("id" ) roomId: Long, @RequestParam since_id: String, @RequestParam limit: String): ArrayList<MessageList> {
-        val messages: ArrayList<MessageList> = messageService.getMessagesFromRoomId(roomId, since_id.toLongOrNull() ?: 0, limit.toIntOrNull() ?: 50)
+    fun getMessages(@PathVariable("id" ) roomId: Long, @RequestParam(required = false) since_id: String?, @RequestParam(required = false) limit: String?): ArrayList<MessageList> {
+        val messages: ArrayList<MessageList> = messageService.getMessagesFromRoomId(roomId, (since_id?.toLongOrNull()) ?: 0, (limit?.toIntOrNull()) ?: 50)
         return messages
     }
 
@@ -25,9 +25,9 @@ class RoomController(private val messageService: MessageService, private val use
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun createMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") roomId: Long, @RequestBody request: PostMessageRequest): Message {
-        val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("")
-        val user = userService.findByUid(uid)
-        val message: Message = messageService.createMessage(roomId, user.id, request.text)
+//        val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("")
+//        val user = userService.findByUid(uid)
+        val message: Message = messageService.createMessage(roomId, 1L, request.text)
         return message
     }
 }

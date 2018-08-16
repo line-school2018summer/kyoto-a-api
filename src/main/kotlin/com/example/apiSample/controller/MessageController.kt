@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-class MessageController(private val messageService: MessageService, private val userService: UserService, private val firebaseGateway: FirebaseGateway) {
+class MessageController(private val messageService: MessageService, private val userService: UserService){ // , private val firebaseGateway: FirebaseGateway) {
     @GetMapping(
             value = ["/messages/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -23,18 +23,19 @@ class MessageController(private val messageService: MessageService, private val 
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun updateMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") messageId: Long, @RequestBody request: PostMessageRequest): Message {
-        val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("")
-        val user = userService.findByUid(uid)
-        return messageService.updateMessage(user.id, messageId, request.text)
+//        val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("")
+//        val user = userService.findByUid(uid)
+        return messageService.updateMessage(1L, messageId, request.text)
     }
 
     @DeleteMapping(
             value = ["/messages/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun deleteMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") messageId: Long, @RequestBody request: PostMessageRequest): Boolean {
-        val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("")
-        val user = userService.findByUid(uid)
-        return messageService.deleteMessage(user.id, messageId)
+    fun deleteMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") messageId: Long, @RequestBody request: PostMessageRequest): String {
+//        val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("")
+//        val user = userService.findByUid(uid)
+        var res = messageService.deleteMessage(1L, messageId)
+        return "{\"result\": " + res.toString() + "}"
     }
 }
