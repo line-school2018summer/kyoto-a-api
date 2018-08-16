@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-class RoomController(private val messageService: MessageService, private val userService: UserService) {
+class RoomController(private val messageService: MessageService, private val userService: UserService, private val firebaseGateway: FirebaseGateway) {
     @GetMapping(
             value = ["/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -25,9 +25,7 @@ class RoomController(private val messageService: MessageService, private val use
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun createMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") roomId: Long, @RequestBody request: PostMessageRequest): Message {
-        val auth = FirebaseGateway()
-        auth.authInit()
-        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("")
+        val uid = firebaseGateway.verifyIdToken(token) ?: throw UnauthorizedException("")
         val user = userService.findByUid(uid)
         val message: Message = messageService.createMessage(roomId, user.id, request.text)
         return message
