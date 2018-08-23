@@ -3,7 +3,7 @@ use `kyoto-a`;
 INSERT INTO users(uid, `name`) VALUES('fakeid1', 'John');
 INSERT INTO users(uid, `name`) VALUES('fakeid2', 'Mike');
 INSERT INTO users(uid, `name`) VALUES('fakeid3', 'Ken');
-INSERT INTO users(uid, `name`) VALUES('X4oRPWJrQUbvQwFLzF9l98pczdh1', 'Hoge')
+INSERT INTO users(uid, `name`) VALUES('X4oRPWJrQUbvQwFLzF9l98pczdh1', 'Hoge');
 
 INSERT INTO rooms(`name`) VALUES('');
 INSERT INTO rooms(`name`) VALUES('my awesome group');
