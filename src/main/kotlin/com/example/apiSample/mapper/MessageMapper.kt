@@ -9,14 +9,14 @@ import org.apache.ibatis.annotations.*
 interface MessageMapper {
     @Select(
         """
-        SELECT messages.id as message_id, room_id, user_id, `text`, messages.created_at as message_updated_at, messages.updated_at as message_updated_at, users.name as user_name, users.created_at as user_created_at, users.updated_at as user_updated_at FROM messages LEFT OUTER JOIN users ON messages.user_id = users.id WHERE messages.id=#{messageId}
+        SELECT messages.id as message_id, room_id, user_id, `text`, messages.created_at as message_created_at, messages.updated_at as message_updated_at, users.name as user_name, users.created_at as user_created_at, users.updated_at as user_updated_at FROM messages LEFT OUTER JOIN users ON messages.user_id = users.id WHERE messages.id=#{messageId}
         """
     )
     fun findById(messageId: Long): MessageForMapping?
 
     @Select(
         """
-        SELECT messages.id as message_id, room_id, user_id, `text`, messages.created_at as message_updated_at, messages.updated_at as message_updated_at, users.name as user_name, users.created_at as user_created_at, users.updated_at as user_updated_at FROM messages LEFT OUTER JOIN users ON messages.user_id = users.id WHERE room_id=#{roomId} AND messages.id >= #{sinceId} LIMIT #{limit}
+        SELECT messages.id as message_id, room_id, user_id, `text`, messages.created_at as message_created_at, messages.updated_at as message_updated_at, users.name as user_name, users.created_at as user_created_at, users.updated_at as user_updated_at FROM messages LEFT OUTER JOIN users ON messages.user_id = users.id WHERE room_id=#{roomId} AND messages.id >= #{sinceId} LIMIT #{limit}
         """
     )
     fun findByRoomId(roomId: Long, sinceId: Long, limit: Int): ArrayList<MessageForMapping>
