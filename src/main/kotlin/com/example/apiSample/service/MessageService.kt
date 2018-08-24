@@ -4,7 +4,6 @@ import com.example.apiSample.controller.BadRequestException
 import com.example.apiSample.mapper.MessageMapper
 import com.example.apiSample.model.Message
 import com.example.apiSample.model.MessageForMapping
-import com.example.apiSample.model.MessageList
 import com.example.apiSample.model.NonUidUser
 import org.springframework.stereotype.Service
 
