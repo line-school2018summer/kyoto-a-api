@@ -48,6 +48,7 @@ data class Message(
         var room_id: Long,
         var user_id: Long,
         var text: String,
+        var user: NonUidUser?,
         @get:JsonProperty("created_at") var createdAt: Timestamp,
         @get:JsonProperty("updated_at") var updatedAt: Timestamp
         )
@@ -57,4 +58,16 @@ data class MessageList(
         var room_id: Long,
         var user_id: Long,
         var text: String
+)
+
+data class MessageForMapping (
+        var message_id: Long,
+        var room_id: Long,
+        var user_id: Long,
+        var text: String,
+        var message_created_at: Timestamp,
+        var message_updated_at: Timestamp,
+        var user_name: String,
+        var user_created_at: Timestamp,
+        var user_updated_at: Timestamp
 )

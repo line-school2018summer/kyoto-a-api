@@ -109,13 +109,13 @@ class RoomController(private val roomService: RoomService,
             value = ["/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getMessages(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id" ) roomId: Long, @RequestParam(required = false) since_id: String?, @RequestParam(required = false) limit: String?): ArrayList<MessageList> {
+    fun getMessages(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id" ) roomId: Long, @RequestParam(required = false) since_id: String?, @RequestParam(required = false) limit: String?): ArrayList<Message> {
         val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
         val user = userService.findByUid(uid)
         if (!roomService.isUserExist(user.id, roomId)){
             throw BadRequestException("has no permission")
         }
-        val messages: ArrayList<MessageList> = messageService.getMessagesFromRoomId(roomId, (since_id?.toLongOrNull()) ?: 0, (limit?.toIntOrNull()) ?: 50)
+        val messages: ArrayList<Message> = messageService.getMessagesFromRoomId(roomId, (since_id?.toLongOrNull()) ?: 0, (limit?.toIntOrNull()) ?: 50)
         return messages
     }
 
