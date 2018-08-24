@@ -27,6 +27,9 @@ class MessageService(private val messageMapper: MessageMapper) {
     }
 
     fun createMessage(roomId: Long, userId: Long, text: String): Message {
+        if (text.isBlank()){
+            throw BadRequestException("text must not be blank")
+        }
         var messageInserted = InsertMessage(
                 room_id = roomId,
                 user_id = userId,
@@ -38,6 +41,9 @@ class MessageService(private val messageMapper: MessageMapper) {
     }
 
     fun updateMessage(userId: Long, messageId: Long, text: String): Message {
+        if (text.isBlank()){
+            throw BadRequestException("text must not be blank")
+        }
         val message = this.getMessageFromId(messageId)
         if (message.user_id == userId) {
             messageMapper.updateMessage(messageId, text)
