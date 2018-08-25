@@ -1,7 +1,6 @@
 package com.example.apiSample.mapper
 
 import com.example.apiSample.model.MessageForMapping
-import com.example.apiSample.model.MessageList
 import com.example.apiSample.service.InsertMessage
 import org.apache.ibatis.annotations.*
 
