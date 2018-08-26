@@ -47,7 +47,7 @@ class MessageController(private val messageService: MessageService, private val 
             value = ["/messages/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun deleteMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") messageId: Long, @RequestBody request: PostMessageRequest): String {
+    fun deleteMessage(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id") messageId: Long): String {
         val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
         val user = userService.findByUid(uid)
         var res = messageService.deleteMessage(user.id, messageId)
