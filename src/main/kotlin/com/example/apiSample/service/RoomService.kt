@@ -18,8 +18,7 @@ class RoomService(private val roomMapper: RoomMapper,
                   private val userMapper: UserMapper) {
 
     fun getRoomFromId(roomId: Long): Room {
-        val room: Room? = roomMapper.findByRoomId(roomId)
-        room ?: throw BadRequestException("no room found")
+        val room: Room = roomFromRoomForMapping(roomMapper.findByRoomId(roomId) ?: throw BadRequestException("no room found"))
         return room
     }
 
@@ -49,7 +48,7 @@ class RoomService(private val roomMapper: RoomMapper,
     }
 
     fun isUserExist(userId: Long, roomId: Long): Boolean {
-        val rooms = roomMapper.findByUserId(userId)
+        val rooms = roomMapper.findFullRoomByUserId(userId)
         return rooms.contains(roomMapper.findByRoomId(roomId))
     }
 
@@ -70,15 +69,32 @@ class RoomService(private val roomMapper: RoomMapper,
     }
 
     fun roomFromRoomForMapping(room_for_mapping: RoomForMapping): Room {
-        val message = Message(
-                id = room_for_mapping.message_id,
-                user_id = room_for_mapping.message_user_id,
-                room_id = room_for_mapping.room_id,
-                user = null,
-                text = room_for_mapping.message_text,
-                createdAt = room_for_mapping.message_created_at,
-                updatedAt = room_for_mapping.message_updated_at
-        )
+        var message: Message? = null
+        val message_id = room_for_mapping.message_id
+        val message_user_id = room_for_mapping.message_user_id
+        val message_text = room_for_mapping.message_text
+        val message_created_at = room_for_mapping.message_created_at
+        val message_updated_at = room_for_mapping.message_updated_at
+        if (message_id != null) {
+            if (message_user_id != null) {
+                if (message_text != null) {
+                    if (message_created_at != null) {
+                        if (message_updated_at != null) {
+                            message = Message(
+                                    id = message_id,
+                                    user_id = message_user_id,
+                                    room_id = room_for_mapping.room_id,
+                                    user = null,
+                                    text = message_text,
+                                    createdAt = message_created_at,
+                                    updatedAt = message_updated_at
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
         return Room(
                 id = room_for_mapping.room_id,
                 name = room_for_mapping.room_name,

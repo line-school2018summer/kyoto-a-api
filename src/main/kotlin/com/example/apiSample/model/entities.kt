@@ -121,12 +121,12 @@ data class MessageForMapping (
 
 data class RoomForMapping (
         var room_id: Long,
-        var message_id: Long,
+        var message_id: Long?,
         var room_name: String,
-        var message_user_id: Long,
-        var message_text: String,
-        var message_created_at: Timestamp,
-        var message_updated_at: Timestamp,
+        var message_user_id: Long?,
+        var message_text: String?,
+        var message_created_at: Timestamp?,
+        var message_updated_at: Timestamp?,
         var room_created_at: Timestamp,
         var room_updated_at: Timestamp
 )
