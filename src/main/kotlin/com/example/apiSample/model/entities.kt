@@ -30,10 +30,13 @@ data class Room(
         @ApiModelProperty(example="海外旅行ぐる", position=1)
         var name: String,
 
-        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=2)
-        @get:JsonProperty("created_at") var createdAt: Timestamp,
+        @ApiModelProperty(position=2)
+        var last_message: Message?,
 
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=3)
+        @get:JsonProperty("created_at") var createdAt: Timestamp,
+
+        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=4)
         @get:JsonProperty("updated_at") var updatedAt: Timestamp
 )
 
@@ -114,4 +117,16 @@ data class MessageForMapping (
 
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=8)
         var user_updated_at: Timestamp
+)
+
+data class RoomForMapping (
+        var room_id: Long,
+        var message_id: Long,
+        var room_name: String,
+        var message_user_id: Long,
+        var message_text: String,
+        var message_created_at: Timestamp,
+        var message_updated_at: Timestamp,
+        var room_created_at: Timestamp,
+        var room_updated_at: Timestamp
 )
