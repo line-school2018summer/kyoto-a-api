@@ -13,9 +13,10 @@ interface MessageMapper {
     )
     fun findById(messageId: Long): MessageForMapping?
 
+    //SELECT messages.id as message_id, room_id, user_id, `text`, messages.created_at as message_created_at, messages.updated_at as message_updated_at, users.name as user_name, users.created_at as user_created_at, users.updated_at as user_updated_at FROM messages LEFT OUTER JOIN users ON messages.user_id = users.id WHERE room_id=#{roomId} AND messages.id >= #{sinceId} ORDER BY message_id LIMIT #{limit}
     @Select(
         """
-        SELECT messages.id as message_id, room_id, user_id, `text`, messages.created_at as message_created_at, messages.updated_at as message_updated_at, users.name as user_name, users.created_at as user_created_at, users.updated_at as user_updated_at FROM messages LEFT OUTER JOIN users ON messages.user_id = users.id WHERE room_id=#{roomId} AND messages.id >= #{sinceId} ORDER BY message_id LIMIT #{limit}
+        SELECT messages.id as message_id, room_id, user_id, `text`, messages.created_at as message_created_at, messages.updated_at as message_updated_at, users.name as user_name, users.created_at as user_created_at, users.updated_at as user_updated_at FROM messages LEFT OUTER JOIN users ON messages.user_id = users.id WHERE room_id=#{roomId} AND messages.id >= #{sinceId} ORDER BY message_id
         """
     )
     fun findByRoomId(roomId: Long, sinceId: Long, limit: Int): ArrayList<MessageForMapping>
