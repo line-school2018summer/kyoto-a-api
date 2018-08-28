@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(private val userMapper: UserMapper) {
 
+    val regex = Regex("[[ぁ-んァ-ヶ亜-熙] \\w ー 。 、]+")
+
     //Userのリスト返却
     fun getUserList(): ArrayList<NonUidUser>{
         return userMapper.getUserList()
@@ -20,8 +22,14 @@ class UserService(private val userMapper: UserMapper) {
     }
 
     fun updateName(id: Long, changedName: String): NonUidUser{
-        userMapper.updateName(id, changedName)
-        return userMapper.findById(id)
+
+        if (regex.matches(changedName)){
+            userMapper.updateName(id, changedName)
+            return userMapper.findById(id)
+        }
+        else{
+            throw Exception("the name has invalid literal.")
+        }
     }
 
     fun create(uid: String, name: String): NonUidUser{
