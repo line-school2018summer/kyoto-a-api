@@ -5,6 +5,7 @@ import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.model.NonUidUser
 import com.example.apiSample.model.User
 import com.example.apiSample.model.UserList
+import com.example.apiSample.model.UserRoom
 import org.springframework.stereotype.Service
 
 @Service
@@ -40,5 +41,17 @@ class UserService(private val userMapper: UserMapper) {
 
     fun findByUid(uid: String): User {
         return userMapper.findByUid(uid) ?: throw BadRequestException("no user found")
+    }
+
+    fun searchUser(str: String): List<NonUidUser>{
+        val userList = userMapper.getUserList()
+        val regex = Regex(str)
+        var list :MutableList<NonUidUser> = mutableListOf()
+        for (user in userList) {
+            if(regex.containsMatchIn(user.name)) {
+                list.add(user.copy())
+            }
+        }
+        return list
     }
 }
