@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import java.sql.Timestamp
+import java.util.Comparator
+
 
 data class User(
         var id: Long,
@@ -86,7 +88,7 @@ data class Message(
 
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=6)
         @get:JsonProperty("updated_at") var updatedAt: Timestamp
-        )
+)
 
 
 data class MessageForMapping (
@@ -130,3 +132,19 @@ data class RoomForMapping (
         var room_created_at: Timestamp,
         var room_updated_at: Timestamp
 )
+
+class RoomComparator : Comparator<Room> {
+
+        override fun compare(R1: Room, R2: Room): Int {
+                return if (lastActivityTime(R1) < lastActivityTime((R2))) 1 else -1
+        }
+
+        fun lastActivityTime(room: Room): Timestamp {
+                val lastMessage: Message? = room.last_message
+                if (lastMessage == null) {
+                        return room.createdAt
+                } else {
+                        return lastMessage.createdAt
+                }
+        }
+}
