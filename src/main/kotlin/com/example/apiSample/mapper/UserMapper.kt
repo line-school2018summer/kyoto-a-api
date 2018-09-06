@@ -48,7 +48,7 @@ interface UserMapper {
     fun create(uid: String, name: String)
 
     @Select(
-            """
+        """
         SELECT users.id, users.`name` FROM users_rooms LEFT JOIN users ON users_rooms.user_id=users.id WHERE users_rooms.room_id=#{roomId}
         """
     )
