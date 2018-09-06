@@ -15,11 +15,21 @@ class FileDownloadsRestController{
   @Autowired
   lateinit var fileStorage: FileStorage
 
-  @GetMapping("/downloads/{id}")
+  @GetMapping("/downloads/icon/{id}")
   fun downloadFile(@PathVariable id: Int): ResponseEntity<Resource> {
-    val file = fileStorage.loadFile("#{id}.", "public/img/")
+    val file = fileStorage.loadFile("${id}.jpg","public/img/icon")
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
         .body(file);
   }
+
+  /*
+  @GetMapping("/downloads")
+  fun downloadFile(): ResponseEntity<Resource> {
+    val file = fileStorage.loadFile("image.jpg", "public/img/icon")
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+        .body(file);
+  }
+  */
 }

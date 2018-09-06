@@ -12,11 +12,16 @@ import java.util.stream.Stream
 
 @Service
 class FileStorage(){
+  /*ファイル操作をします
+   *多くの関数の引数にあるlocationではパスを指定します
+   */
 
-  fun store(file: MultipartFile, location: String, filename: Int){
-    Files.copy(file.getInputStream(), Paths.get(location).resolve(filename.toString()))
+  //ファイルの保存をする関数です
+  fun store(file: MultipartFile, location: String, filename: String){
+    Files.copy(file.getInputStream(), Paths.get(location).resolve(filename))
   }
 
+  //ファイルを読み込みます
   fun loadFile(filename: String, location: String): Resource {
     val file = Paths.get(location).resolve(filename)
     val resource = UrlResource(file.toUri())
@@ -39,4 +44,15 @@ class FileStorage(){
         .map(p::relativize)
   }
 
+  val regex = Regex("\\.[a-z]+$")
+
+  //ファイルの拡張子を返します(.を含みます)
+  fun checkFileType(file: String): String{
+    val extention = regex.find(file)?.value ?: throw Exception("this is invalid")
+    return extention
+  }
+  fun checkFileType(file: MultipartFile): String{
+    val name = file.originalFilename ?: throw Exception("this is invalid")
+    return checkFileType(name)
+  }
 }
