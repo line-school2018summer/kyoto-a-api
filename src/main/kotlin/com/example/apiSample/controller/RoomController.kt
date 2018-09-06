@@ -3,26 +3,33 @@ package com.example.apiSample.controller
 import com.example.apiSample.Requests.PostMessageRequest
 import com.example.apiSample.firebase.AuthGateway
 import com.example.apiSample.model.Message
-import com.example.apiSample.model.MessageList
 import com.example.apiSample.service.MessageService
 import com.example.apiSample.model.UserList
 import com.example.apiSample.model.Room
-import com.example.apiSample.model.RoomList
 import com.example.apiSample.service.RoomService
 import com.example.apiSample.service.UserService
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiModelProperty
+import io.swagger.annotations.ApiOperation
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
 data class PostRoomRequest(
+        @ApiModelProperty(example="海外旅行ぐる", position=0)
         val name: String,
+
+        @ApiModelProperty(example="[1,2]", position=1)
         val userIds: ArrayList<Long>
 )
 
 @RestController
+@Api(value = "api",description = "ルームに関するAPIです。")
 class RoomController(private val roomService: RoomService,
                      private val userService: UserService,
                      private val messageService: MessageService,
                      private val authGateway: AuthGateway) {
+
+    @ApiOperation(value = "idに対応したルームの情報を取得します。")
     @GetMapping(
             value = ["/rooms/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -31,6 +38,7 @@ class RoomController(private val roomService: RoomService,
         return roomService.getRoomFromId(roomId)
     }
 
+    @ApiOperation(value = "ログインしているユーザーが所属しているルームの一覧を取得します。")
     @GetMapping(
             value = ["/rooms"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -42,6 +50,7 @@ class RoomController(private val roomService: RoomService,
         return Rooms
     }
 
+    @ApiOperation(value = "ルームを作成します。")
     @PostMapping(
             value = ["/rooms"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -59,6 +68,7 @@ class RoomController(private val roomService: RoomService,
         return roomService.getRoomFromId(room.id)
     }
 
+    @ApiOperation(value = "idに対応するルームの名前を変更します。")
     @PutMapping(
             value = ["/rooms/{id}/name"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -73,6 +83,7 @@ class RoomController(private val roomService: RoomService,
         return roomService.getRoomFromId(roomId)
     }
 
+    @ApiOperation(value = "idに対応するルームのユーザーを取得します。")
     @GetMapping(
             value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -81,6 +92,7 @@ class RoomController(private val roomService: RoomService,
         return roomService.getMembers(roomId)
     }
 
+    @ApiOperation(value = "idに対応するルームのユーザーを変更します。")
     @PutMapping(
             value = ["/rooms/{id}/members"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -105,20 +117,22 @@ class RoomController(private val roomService: RoomService,
         return roomService.getRoomFromId(roomId)
     }
 
+    @ApiOperation(value = "idに対応するルームのメッセージを取得します。")
     @GetMapping(
             value = ["/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getMessages(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id" ) roomId: Long, @RequestParam(required = false) since_id: String?, @RequestParam(required = false) limit: String?): ArrayList<MessageList> {
+    fun getMessages(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id" ) roomId: Long, @RequestParam(required = false) since_id: String?, @RequestParam(required = false) limit: String?): ArrayList<Message> {
         val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
         val user = userService.findByUid(uid)
         if (!roomService.isUserExist(user.id, roomId)){
             throw BadRequestException("has no permission")
         }
-        val messages: ArrayList<MessageList> = messageService.getMessagesFromRoomId(roomId, (since_id?.toLongOrNull()) ?: 0, (limit?.toIntOrNull()) ?: 50)
+        val messages: ArrayList<Message> = messageService.getMessagesFromRoomId(roomId, (since_id?.toLongOrNull()) ?: 0, (limit?.toIntOrNull()) ?: 50)
         return messages
     }
 
+    @ApiOperation(value = "idに対応するルームにメッセージを追加します。")
     @PostMapping(
             value = ["/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]

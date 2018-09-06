@@ -3,24 +3,18 @@ package com.example.apiSample.controller
 import com.example.apiSample.firebase.AuthGateway
 import com.example.apiSample.model.NonUidUser
 import com.example.apiSample.service.UserService
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
 
-data class UserListResponse(
-        var id: Long,
-        var uid: String,
-        var name: String
-)
-
-data class PostSearchRequest(
-        val search_str: String
-)
-
 @RestController
+@Api(value = "api",description = "ユーザーに関するAPIです。")
 class UserController(private val userService: UserService,
                      private val auth: AuthGateway) {
 
+    @ApiOperation(value = "ユーザーを作成します。")
     @PostMapping(
             value = ["/users"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -31,6 +25,7 @@ class UserController(private val userService: UserService,
         return userService.create(uid, name)
     }
 
+    @ApiOperation(value = "ユーザーの一覧を取得します。")
     @GetMapping(
             value = ["/users"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -39,6 +34,7 @@ class UserController(private val userService: UserService,
         return userService.getUserList()
     }
 
+    @ApiOperation(value = "ログインしているユーザーの情報を取得します。")
     @GetMapping(
             value = ["/users/me"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -49,6 +45,7 @@ class UserController(private val userService: UserService,
         return userService.findById(id)
     }
 
+    @ApiOperation(value = "ログインしているユーザーの情報を変更します。")
     @PutMapping(
             value = ["/users/me"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
@@ -60,6 +57,7 @@ class UserController(private val userService: UserService,
         return userService.updateName(id, changedName)
     }
 
+    @ApiOperation(value = "idに対応したユーザーの情報を取得します。")
     @GetMapping(
             value = ["/users/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]

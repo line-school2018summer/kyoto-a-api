@@ -7,9 +7,7 @@ import com.google.auth.oauth2.GoogleCredentials
 import org.springframework.stereotype.Component
 import org.slf4j.LoggerFactory
 
-interface AuthGateway{
-    fun verifyIdToken(id_token: String): String?
-}
+
 
 @Component
 class  FirebaseGateway : AuthGateway{
@@ -37,7 +35,7 @@ class  FirebaseGateway : AuthGateway{
     戻り値
     - uid: String?: 正しいJWTの場合uidを返す。正しくない場合はnull。
     */
-    override fun verifyIdToken(id_token: String): String?{
+    override fun verifyIdToken(id_token: String?): String?{
 
         try {
             val decodedToken = FirebaseAuth.getInstance().verifyIdTokenAsync(id_token).get()

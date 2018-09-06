@@ -20,6 +20,7 @@ class FirebaseGatewayTests{
         //初期化
         val auth = FirebaseGateway()
 
+        //2回インスタンスを作成しても大丈夫
         val auth2 = FirebaseGateway()
 
         //CASE1 : jwtの形式でない場合はnullが返ってくる。例外のログが出力される。
