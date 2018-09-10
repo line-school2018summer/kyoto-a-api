@@ -30,18 +30,13 @@ class  FileUploadRestController(private val userService: UserService,
                  @RequestBody file: MultipartFile): Boolean /*成功ならtrue*/ {
 
     //val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
-    val user: NonUidUser = userService.findById(1)
-    val id = user.id
+    //val user = userService.findByUid(uid)
+    val id = 1L//user.id
 
     if(!file.isEmpty()){
       try{
-        val prevFile = Paths.get("public/img/icon").resolve(userService.getIconUser(id).icon)
-        userService.deleteIcon(id)
-        Files.delete(prevFile)
-        val type = fileStorage.checkFileType(file)
-        val fileName = id.toString() + type
-        fileStorage.store(file, "public/img/icon", fileName)
-        userService.setIcon(id, fileName)
+        userService.deleteIcon(id, "public/img/icon")
+        userService.setIcon(id, "public/img/icon", file)
         return true
       }
       catch(t: IOException){
@@ -51,5 +46,18 @@ class  FileUploadRestController(private val userService: UserService,
     else{
       return false
     }
+  }
+
+  @DeleteMapping(
+      value = ["upload/icon"],
+      produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+  )
+  fun deleteIcon(@RequestHeader("Token")token: String): Boolean{
+    //val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
+    //val user = userService.findByUid(uid) //userService.findById(1)
+    val id = 1L//user.id
+
+    userService.deleteIcon(id, "public/img/icon")
+    return true
   }
 }
