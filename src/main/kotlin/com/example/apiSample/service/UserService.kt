@@ -3,10 +3,8 @@ package com.example.apiSample.service
 import com.example.apiSample.controller.BadRequestException
 import com.example.apiSample.firebase.FirebaseGateway
 import com.example.apiSample.mapper.UserMapper
-import com.example.apiSample.model.NonUidUser
-import com.example.apiSample.model.User
-import com.example.apiSample.model.UserList
-import com.example.apiSample.model.UserRoom
+import com.example.apiSample.model.*
+import org.apache.ibatis.jdbc.Null
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -38,6 +36,19 @@ class UserService(private val userMapper: UserMapper) {
         }
     }
 
+    fun getIconUser(id: Long): IconUser {
+        return userMapper.getIconUser(id)
+    }
+
+    fun setIcon(id: Long, icon: String)/*: IconUser*/{
+        userMapper.setIcon(id, icon)
+        //return userMapper.getIconUser(id)
+    }
+
+    fun deleteIcon(id: Long){
+        userMapper.setIcon(id, null)
+    }
+
     fun create(uid: String, name: String): NonUidUser{
 
         //既にuidが登録されている場合(新規登録でない場合)はエラーが返ってくるのでキャッチする。
@@ -66,4 +77,5 @@ class UserService(private val userMapper: UserMapper) {
         }
         return list
     }
+
 }

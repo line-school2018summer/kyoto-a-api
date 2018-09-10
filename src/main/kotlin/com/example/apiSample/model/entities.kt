@@ -22,6 +22,14 @@ data class UserList(
         var name: String
 )
 
+data class IconUser(
+    var id: Long,
+    var name: String,
+    var icon: String?,
+    @get:JsonProperty("created_at") var createdAt: Timestamp,
+    @get:JsonProperty("updated_at") var updatedAt: Timestamp
+)
+
 data class Room(
 
         @ApiModelProperty(example="1", position=0)

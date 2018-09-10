@@ -11,8 +11,10 @@ import java.nio.file.Paths;
 import java.util.stream.Stream
 
 @Service
-class FileStorage(){
-  /*ファイル操作をします
+  class FileStorage(){
+
+  /*
+   *ファイル操作をします
    *多くの関数の引数にあるlocationではパスを指定します
    */
 

@@ -1,12 +1,10 @@
 package com.example.apiSample.mapper
 
+import com.example.apiSample.model.IconUser
 import com.example.apiSample.model.NonUidUser
 import com.example.apiSample.model.User
 import com.example.apiSample.model.UserList
-import org.apache.ibatis.annotations.Insert
-import org.apache.ibatis.annotations.Mapper
-import org.apache.ibatis.annotations.Select
-import org.apache.ibatis.annotations.Update
+import org.apache.ibatis.annotations.*
 
 @Mapper
 interface UserMapper {
@@ -53,4 +51,19 @@ interface UserMapper {
         """
     )
     fun findByRoomId(roomId: Long): ArrayList<UserList>
+
+    @Select(
+        """
+          SELECT id, name, icon, created_at, updated_at FROM users WHERE id=#{id}
+        """
+    )
+    fun getIconUser(id: Long): IconUser
+
+    @Update(
+        """
+          UPDATE users SET icon=#{icon} WHERE id=#{id}
+        """
+    )
+    fun setIcon(id: Long, icon: String?): Unit
+
 }
