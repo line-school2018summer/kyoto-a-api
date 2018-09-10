@@ -55,9 +55,12 @@ class UserService(private val userMapper: UserMapper) {
     }
 
     fun deleteIcon(id: Long, location: String){
-        val prevFile = Paths.get(location).resolve(getIconUser(id).icon)
-        userMapper.setIcon(id, null)
-        Files.delete(prevFile)
+        val icon = getIconUser(id).icon
+        if(icon != null) {
+            val prevFile = Paths.get(location).resolve(icon)
+            userMapper.setIcon(id, null)
+            Files.delete(prevFile)
+        }
     }
 
     fun create(uid: String, name: String): NonUidUser{
