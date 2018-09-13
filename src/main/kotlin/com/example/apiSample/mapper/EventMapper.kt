@@ -17,17 +17,17 @@ interface EventMapper {
 
     @Select(
             """
-        SELECT id, event_type, target_id FROM events WHERE id=#{eventId} AND event_type=#{event_type} AND id >= #{sinceId} ORDER BY id limit #{limit}
+        SELECT id, event_type, target_id FROM events WHERE event_type=#{event_type} AND id >= #{sinceId} ORDER BY id limit #{limit}
         """
     )
-    fun findListById(eventId: Long, eventType: Long, sinceId: Long, limit: Int): ArrayList<Event>
+    fun findListById(eventType: Long, sinceId: Long, limit: Int): ArrayList<Event>
 
     @Select(
             """
-        SELECT id, event_type, target_id FROM events WHERE id=#{eventId} AND id >= #{sinceId} ORDER BY id limit #{limit}
+        SELECT id, event_type, target_id FROM events WHERE id >= #{sinceId} ORDER BY id limit #{limit}
         """
     )
-    fun findListById(eventId: Long, sinceId: Long, limit: Int): ArrayList<Event>
+    fun findListById(sinceId: Long, limit: Int): ArrayList<Event>
 
     @Insert(
         """
