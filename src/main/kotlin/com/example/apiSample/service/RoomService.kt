@@ -83,7 +83,7 @@ class RoomService(private val roomMapper: RoomMapper,
                 id = room_for_mapping.message_id ?: return room,
                 user_id = room_for_mapping.message_user_id ?: return room,
                 room_id = room_for_mapping.room_id,
-                user = null,
+                user_name = "",
                 text = room_for_mapping.message_text ?: return room,
                 createdAt = room_for_mapping.message_created_at ?: return room,
                 updatedAt = room_for_mapping.message_updated_at ?: return room

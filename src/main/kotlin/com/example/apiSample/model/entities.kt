@@ -88,8 +88,8 @@ data class Message(
         @ApiModelProperty(example="こんにちは", position=3)
         var text: String,
 
-        @ApiModelProperty(position=4)
-        var user: NonUidUser?,
+        @ApiModelProperty(example="太郎",position=4)
+        var user_name: String,
 
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=5)
         @get:JsonProperty("created_at") var createdAt: Timestamp,
