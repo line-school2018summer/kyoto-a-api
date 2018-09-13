@@ -68,17 +68,11 @@ class MessageService(private val messageMapper: MessageMapper) {
     }
 
     fun messageFromMessageForMapping(message_for_mapping: MessageForMapping): Message {
-        val user = NonUidUser(
-                id = message_for_mapping.user_id,
-                name = message_for_mapping.user_name,
-                createdAt = message_for_mapping.user_created_at,
-                updatedAt = message_for_mapping.user_updated_at
-        )
         return Message(
                 id = message_for_mapping.message_id,
                 room_id = message_for_mapping.room_id,
                 user_id = message_for_mapping.user_id,
-                user = user,
+                user_name = message_for_mapping.user_name,
                 text = message_for_mapping.text,
                 createdAt = message_for_mapping.message_created_at,
                 updatedAt = message_for_mapping.message_updated_at
