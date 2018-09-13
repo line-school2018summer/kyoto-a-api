@@ -1,11 +1,7 @@
 package com.example.apiSample.service
 
-import com.example.apiSample.controller.BadRequestException
 import com.example.apiSample.mapper.EventMapper
-import com.example.apiSample.mapper.MessageMapper
-import com.example.apiSample.mapper.RoomMapper
 import com.example.apiSample.model.*
-import javafx.event.EventType
 import org.springframework.stereotype.Service
 
 @Service
