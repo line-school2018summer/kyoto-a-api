@@ -27,19 +27,21 @@ class EventService(private val eventMapper: EventMapper) {
     }
 
     fun createEvent(event_type: Int, room_id: Long?, user_id: Long?, message_id: Long?): Event {
-        val new_event = InsertEvent(
+        val create_event = InsertEvent(
             event_type = event_type,
             room_id = room_id,
             user_id = user_id,
             message_id = message_id
         )
-        val event_id = eventMapper.createEvent(new_event)
-        return Event(
+        val event_id = eventMapper.createEvent(create_event)
+        val new_event = Event(
                 id = event_id,
                 event_type = event_type,
                 room_id = room_id,
                 user_id = user_id,
                 message_id = message_id
         )
+        // eventからフック
+        return new_event
     }
 }
