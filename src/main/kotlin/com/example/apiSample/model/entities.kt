@@ -160,3 +160,15 @@ data class InsertEvent(
     var event_type: Int,
     var target_id: Long
 )
+
+enum class EventTypes(val event_type: Int) {
+    PROFILE_UPDATED(1),
+    ROOM_CREATED(2),
+    ROOM_UPDATED(3),
+    ROOM_MEMBER_JOINED(4),
+    ROOM_MEMBER_LEAVED(5),
+    ROOM_MEMBER_DELETED(6),
+    MESSAGE_SENT(7),
+    MESSAGE_UPDATED(8),
+    MESSAGE_DELETED(9),
+}
