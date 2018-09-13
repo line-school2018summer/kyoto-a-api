@@ -20,9 +20,13 @@ class EventService(private val eventMapper: EventMapper) {
 
     fun getRoomEventsFromRoomId(room_id: Long, since_id: Long = 0, limit: Int = 50): ArrayList<Event> {
         return eventMapper.findRoomEventsFromRoomId(
+                room_id,
                 since_id,
-                limit,
-                room_id
+                limit
         )
+    }
+
+    fun getMessageEventsFromRoomId(room_id: Long, since_id: Long = 0, limit: Int = 50): ArrayList<Event> {
+        return eventMapper.findMessagesEventsFromRoomId(room_id, since_id, limit)
     }
 }

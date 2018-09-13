@@ -27,14 +27,14 @@ interface EventMapper {
             SELECT id, event_type, room_id, message_id FROM events WHERE event_type IN (6,7,8) AND room_id=#{roomId} AND id >= #{sinceId} ORDER BY id ASC LIMIT #{limit}
         """
     )
-    fun findMessagesEventsFromRoomId(sinceId: Long, limit: Int, roomId: Long): ArrayList<Event>
+    fun findMessagesEventsFromRoomId(roomId: Long, sinceId: Long, limit: Int): ArrayList<Event>
 
     @Select(
         """
             SELECT id, event_type, room_id, user_id, message_id FROM events WHERE event_type IN (0,1,2,3,4,5) AND room_id=#{roomId} AND id >= #{sinceId} ORDER BY id ASC LIMIT #{limit}
         """
     )
-    fun findRoomEventsFromRoomId(sinceId: Long, limit: Int, roomId: Long): ArrayList<Event>
+    fun findRoomEventsFromRoomId(roomId: Long, sinceId: Long, limit: Int): ArrayList<Event>
 
     @Insert(
         """

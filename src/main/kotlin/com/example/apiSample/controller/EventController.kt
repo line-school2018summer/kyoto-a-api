@@ -22,13 +22,13 @@ class EventController(private val eventService: EventService, private val userSe
             value = ["/events/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getEvent(@RequestHeader(value="Token", required=true) token: String, @PathVariable("id" ) eventId: Long): Event {
+    fun getEvent(@RequestHeader(value = "Token", required = true) token: String, @PathVariable("id") eventId: Long): Event {
         val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
         val user = userService.findByUid(uid)
         val event = eventService.getEventFromId(eventId)
         val room_id = event.room_id
         room_id ?: return event
-        if (!roomService.isUserExist(user.id, room_id)){
+        if (!roomService.isUserExist(user.id, room_id)) {
             throw BadRequestException("has no permission")
         }
         return event
@@ -38,7 +38,15 @@ class EventController(private val eventService: EventService, private val userSe
             value = ["/events/rooms/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getRoomEvents(@RequestHeader(value="Token", required = true) token: String, @PathVariable("id" ) roomId: Long): ArrayList<Event> {
+    fun getRoomEvents(@RequestHeader(value = "Token", required = true) token: String, @PathVariable("id") roomId: Long): ArrayList<Event> {
         return eventService.getRoomEventsFromRoomId(roomId)
+    }
+
+    @GetMapping(
+            value = ["/events/rooms/{id}/messages"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getMessageEvents(@RequestHeader(value = "Token", required = true) token: String, @PathVariable("id") roomId: Long): ArrayList<Event> {
+        return eventService.getMessageEventsFromRoomId(roomId)
     }
 }
