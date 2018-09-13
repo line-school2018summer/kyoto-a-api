@@ -152,23 +152,27 @@ class RoomComparator : Comparator<Room> {
 data class Event(
     var id: Long,
     var event_type: Int,
-    var target_id: Long
+    var room_id: Long?,
+    var user_id: Long?,
+    var message_id: Long?
 )
 
 data class InsertEvent(
     var id: Long? = null,
     var event_type: Int,
-    var target_id: Long
+    var room_id: Long?,
+    var user_id: Long?,
+    var message_id: Long?
 )
 
-enum class EventTypes(val event_type: Int) {
-    PROFILE_UPDATED(1),
-    ROOM_CREATED(2),
-    ROOM_UPDATED(3),
-    ROOM_MEMBER_JOINED(4),
-    ROOM_MEMBER_LEAVED(5),
-    ROOM_MEMBER_DELETED(6),
-    MESSAGE_SENT(7),
-    MESSAGE_UPDATED(8),
-    MESSAGE_DELETED(9),
+enum class EventTypes {
+    PROFILE_UPDATED,
+    ROOM_CREATED,
+    ROOM_UPDATED,
+    ROOM_MEMBER_JOINED,
+    ROOM_MEMBER_LEAVED,
+    ROOM_MEMBER_DELETED,
+    MESSAGE_SENT,
+    MESSAGE_UPDATED,
+    MESSAGE_DELETED,
 }
