@@ -151,5 +151,6 @@ class RoomComparator : Comparator<Room> {
 
 data class Event(
     var id: Long,
+    var event_type: Int,
     var target_id: Long
 )
