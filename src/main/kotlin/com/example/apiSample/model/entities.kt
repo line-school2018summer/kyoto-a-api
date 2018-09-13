@@ -154,3 +154,9 @@ data class Event(
     var event_type: Int,
     var target_id: Long
 )
+
+data class InsertEvent(
+    var id: Long? = null,
+    var event_type: Int,
+    var target_id: Long
+)
