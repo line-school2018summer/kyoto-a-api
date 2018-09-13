@@ -24,6 +24,14 @@ data class UserList(
         var name: String
 )
 
+data class IconUser(
+    var id: Long,
+    var name: String,
+    var icon: String?,
+    @get:JsonProperty("created_at") var createdAt: Timestamp,
+    @get:JsonProperty("updated_at") var updatedAt: Timestamp
+)
+
 data class Room(
 
         @ApiModelProperty(example="1", position=0)
@@ -32,13 +40,16 @@ data class Room(
         @ApiModelProperty(example="海外旅行ぐる", position=1)
         var name: String,
 
-        @ApiModelProperty(position=2)
-        var last_message: Message?,
+        @ApiModelProperty(position=2,example = "こんにちは")
+        var last_message_text: String?,
 
-        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=3)
-        @get:JsonProperty("created_at") var createdAt: Timestamp,
+        @ApiModelProperty(position=3, example="2018-08-24T00:00:00.000+0000")
+        @get:JsonProperty("last_message_created_at") var last_message_created_at: Timestamp?,
 
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=4)
+        @get:JsonProperty("created_at") var createdAt: Timestamp,
+
+        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=5)
         @get:JsonProperty("updated_at") var updatedAt: Timestamp
 )
 
@@ -80,8 +91,8 @@ data class Message(
         @ApiModelProperty(example="こんにちは", position=3)
         var text: String,
 
-        @ApiModelProperty(position=4)
-        var user: NonUidUser?,
+        @ApiModelProperty(example="太郎",position=4)
+        var user_name: String,
 
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=5)
         @get:JsonProperty("created_at") var createdAt: Timestamp,
@@ -140,11 +151,11 @@ class RoomComparator : Comparator<Room> {
         }
 
         fun lastActivityTime(room: Room): Timestamp {
-                val lastMessage: Message? = room.last_message
-                if (lastMessage == null) {
+                val last_message_created_at: Timestamp? = room.last_message_created_at
+                if (last_message_created_at == null) {
                         return room.createdAt
                 } else {
-                        return lastMessage.createdAt
+                        return last_message_created_at
                 }
         }
 }
