@@ -43,12 +43,12 @@ class WebsocketController(private val roomService: RoomService,
 @Configuration
 class WebSocketConfig : WebSocketMessageBrokerConfigurer { // AbstractWebSocketMessageBrokerConfigurerを継承しWebSocket関連のBean定義をカスタマイズする
 
-    override fun registerStompEndpoints(registry: StompEndpointRegistry?) {
-        registry!!.addEndpoint("/hello").withSockJS() // WebSocketのエンドポイント (接続時に指定するエンドポイント)を指定
+    override fun registerStompEndpoints(registry: StompEndpointRegistry) {
+        registry.addEndpoint("/hello").withSockJS() // WebSocketのエンドポイント (接続時に指定するエンドポイント)を指定
     }
 
-    fun configureMessageBroker(registry: MessageBrokerRegistry?) {
-        registry!!.setApplicationDestinationPrefixes("/app") // アプリケーション(Controller)でハンドリングするエンドポイントのプレフィックス
+    override fun configureMessageBroker(registry: MessageBrokerRegistry) {
+        registry.setApplicationDestinationPrefixes("/app") // アプリケーション(Controller)でハンドリングするエンドポイントのプレフィックス
         registry.enableSimpleBroker("/topic", "/queue") // Topic(Pub-Sub)とQueue(P2P)を有効化 >>> メッセージブローカーがハンドリングする
     }
 
