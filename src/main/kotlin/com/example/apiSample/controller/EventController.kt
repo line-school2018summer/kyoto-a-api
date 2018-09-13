@@ -1,15 +1,11 @@
 package com.example.apiSample.controller
 
-import com.example.apiSample.Requests.PostMessageRequest
 import com.example.apiSample.firebase.AuthGateway
 import com.example.apiSample.model.Event
-import com.example.apiSample.model.Message
 import com.example.apiSample.service.EventService
-import com.example.apiSample.service.MessageService
 import com.example.apiSample.service.RoomService
 import com.example.apiSample.service.UserService
 import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
