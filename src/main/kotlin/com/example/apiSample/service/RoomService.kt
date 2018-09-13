@@ -69,27 +69,17 @@ class RoomService(private val roomMapper: RoomMapper,
     }
 
     fun roomFromRoomForMapping(room_for_mapping: RoomForMapping): Room {
-        var message: Message? = null
 
         val room = Room(
                 id = room_for_mapping.room_id,
                 name = room_for_mapping.room_name,
-                last_message = message,
+                last_message_text = room_for_mapping.message_text,
+                last_message_created_at = room_for_mapping.message_created_at,
                 createdAt = room_for_mapping.room_created_at,
                 updatedAt = room_for_mapping.room_updated_at
         )
 
-        message = Message(
-                id = room_for_mapping.message_id ?: return room,
-                user_id = room_for_mapping.message_user_id ?: return room,
-                room_id = room_for_mapping.room_id,
-                user_name = "",
-                text = room_for_mapping.message_text ?: return room,
-                createdAt = room_for_mapping.message_created_at ?: return room,
-                updatedAt = room_for_mapping.message_updated_at ?: return room
-        )
 
-        room.last_message = message
 
 
         return room
