@@ -24,7 +24,7 @@ interface EventMapper {
 
     @Select(
         """
-            SELECT id, event_type, room_id, message_id FROM events WHERE event_type IN (6,7,8) AND room_id=#{roomId} AND id >= #{sinceId} ORDER BY id ASC LIMIT #{limit}
+            SELECT id, event_type, room_id, user_id, message_id FROM events WHERE event_type IN (6,7,8) AND room_id=#{roomId} AND id >= #{sinceId} ORDER BY id ASC LIMIT #{limit}
         """
     )
     fun findMessagesEventsFromRoomId(roomId: Long, sinceId: Long, limit: Int): ArrayList<Event>
@@ -38,10 +38,10 @@ interface EventMapper {
 
     @Insert(
         """
-        INSERT INTO events(event_type, room_id, user_id, message_id) VALUES(#{eventType}, #{roomId}, #{user_id}, #{message_id})
+        INSERT INTO events(event_type, room_id, user_id, message_id) VALUES(#{event_type}, #{room_id}, #{user_id}, #{message_id})
         """
     )
     @SelectKey(statement = ["select LAST_INSERT_ID()"], keyProperty = "id",
-    before = false, resultType = Int::class)
-    fun createEvent(event: InsertEvent): Int
+    before = false, resultType = Long::class)
+    fun createEvent(event: InsertEvent): Long
 }
