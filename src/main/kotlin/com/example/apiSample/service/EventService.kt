@@ -14,16 +14,16 @@ class EventService(private val eventMapper: EventMapper) {
         return eventMapper.findListByType(eventType, since_id, limit)
     }
 
-    fun getRoomEventsFromRoomId(room_id: Long, since_id: Long = 0, limit: Int = 50): ArrayList<Event> {
+    fun getRoomEventsFromRoomId(room_id: Long, since_id: Long?, limit: Int?): ArrayList<Event> {
         return eventMapper.findRoomEventsFromRoomId(
                 room_id,
-                since_id,
-                limit
+                since_id ?: 0,
+                limit ?: 50
         )
     }
 
-    fun getMessageEventsFromRoomId(room_id: Long, since_id: Long = 0, limit: Int = 50): ArrayList<Event> {
-        return eventMapper.findMessagesEventsFromRoomId(room_id, since_id, limit)
+    fun getMessageEventsFromRoomId(room_id: Long, since_id: Long?, limit: Int?): ArrayList<Event> {
+        return eventMapper.findMessagesEventsFromRoomId(room_id, since_id ?: 0, limit ?: 50)
     }
 
     fun createEvent(event_type: Int, room_id: Long?, user_id: Long?, message_id: Long?): Event {
