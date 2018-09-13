@@ -25,4 +25,21 @@ class EventService(private val eventMapper: EventMapper) {
     fun getMessageEventsFromRoomId(room_id: Long, since_id: Long = 0, limit: Int = 50): ArrayList<Event> {
         return eventMapper.findMessagesEventsFromRoomId(room_id, since_id, limit)
     }
+
+    fun createEvent(event_type: Int, room_id: Long?, user_id: Long?, message_id: Long?): Event {
+        val new_event = InsertEvent(
+            event_type = event_type,
+            room_id = room_id,
+            user_id = user_id,
+            message_id = message_id
+        )
+        val event_id = eventMapper.createEvent(new_event)
+        return Event(
+                id = event_id,
+                event_type = event_type,
+                room_id = room_id,
+                user_id = user_id,
+                message_id = message_id
+        )
+    }
 }

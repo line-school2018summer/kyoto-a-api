@@ -15,7 +15,8 @@ data class InsertRoom (
 @Service
 class RoomService(private val roomMapper: RoomMapper,
                   private val userRoomMapper: UserRoomMapper,
-                  private val userMapper: UserMapper) {
+                  private val userMapper: UserMapper,
+                  private val eventService: EventService) {
 
     fun getRoomFromId(roomId: Long): Room {
         val room: Room = roomFromRoomForMapping(roomMapper.findByRoomId(roomId) ?: throw BadRequestException("no room found"))
@@ -43,6 +44,7 @@ class RoomService(private val roomMapper: RoomMapper,
                 name = name
         )
         roomMapper.createRoom(roomInserted)
+        eventService.createEvent(EventTypes.ROOM_CREATED.ordinal, roomInserted.id, null, null)
         val room = this.getRoomFromId(roomInserted.id)
         return room
     }
@@ -53,10 +55,12 @@ class RoomService(private val roomMapper: RoomMapper,
     }
 
     fun addMember(userId: Long, roomId: Long): Long {
+        eventService.createEvent(EventTypes.ROOM_MEMBER_JOINED.ordinal, roomId, userId, null)
         return userRoomMapper.addMember(userId, roomId)
     }
 
     fun updateRoom(roomId: Long, name: String): Long {
+        eventService.createEvent(EventTypes.ROOM_UPDATED.ordinal, roomId, null, null)
         return roomMapper.updateRoom(roomId, name)
     }
 
@@ -65,6 +69,7 @@ class RoomService(private val roomMapper: RoomMapper,
     }
 
     fun removeMember(userId: Long, roomId: Long): Boolean {
+        eventService.createEvent(EventTypes.ROOM_MEMBER_LEAVED.ordinal, roomId, userId, null)
         return userRoomMapper.removeMember(userId, roomId)
     }
 

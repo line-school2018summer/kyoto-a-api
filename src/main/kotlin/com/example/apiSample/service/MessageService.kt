@@ -2,6 +2,7 @@ package com.example.apiSample.service
 
 import com.example.apiSample.controller.BadRequestException
 import com.example.apiSample.mapper.MessageMapper
+import com.example.apiSample.model.EventTypes
 import com.example.apiSample.model.Message
 import com.example.apiSample.model.MessageForMapping
 import com.example.apiSample.model.NonUidUser
@@ -15,7 +16,7 @@ data class InsertMessage (
 )
 
 @Service
-class MessageService(private val messageMapper: MessageMapper) {
+class MessageService(private val messageMapper: MessageMapper, private val eventService: EventService) {
     fun getMessagesFromRoomId(roomId: Long, sinceId: Long = 0, limit: Int = 50): ArrayList<Message> {
         val messages_for_mapping = messageMapper.findByRoomId(roomId, sinceId, limit)
         val mutable_messages = mutableListOf<Message>()
@@ -43,6 +44,7 @@ class MessageService(private val messageMapper: MessageMapper) {
                 text = text
         )
         messageMapper.createMessage(messageInserted)
+        eventService.createEvent(EventTypes.MESSAGE_SENT.ordinal, roomId, userId, messageInserted.id)
         val message = this.getMessageFromId(messageInserted.id)
         return message
     }
@@ -54,6 +56,7 @@ class MessageService(private val messageMapper: MessageMapper) {
         val message = this.getMessageFromId(messageId)
         if (message.user_id == userId) {
             messageMapper.updateMessage(messageId, text)
+            eventService.createEvent(EventTypes.MESSAGE_UPDATED.ordinal, message.room_id, userId, messageId)
             return this.getMessageFromId(messageId)
         }
         throw BadRequestException("message creator only can update message")
@@ -62,6 +65,7 @@ class MessageService(private val messageMapper: MessageMapper) {
     fun deleteMessage(userId: Long, messageId: Long): Boolean {
         val message: Message = this.getMessageFromId(messageId)
         if (message.user_id == userId) {
+            eventService.createEvent(EventTypes.MESSAGE_DELETED.ordinal, message.room_id, userId, messageId)
             return messageMapper.deleteMessage(messageId)
         }
         throw BadRequestException("message creator only can delete message")
