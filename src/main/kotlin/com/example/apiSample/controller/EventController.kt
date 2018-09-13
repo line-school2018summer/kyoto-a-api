@@ -34,15 +34,15 @@ class EventController(private val eventService: EventService, private val userSe
             value = ["/events/rooms/{id}"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getRoomEvents(@RequestHeader(value = "Token", required = true) token: String, @PathVariable("id") roomId: Long): ArrayList<Event> {
-        return eventService.getRoomEventsFromRoomId(roomId)
+    fun getRoomEvents(@RequestHeader(value = "Token", required = true) token: String, @PathVariable("id") roomId: Long, @RequestParam(required = false) since_id: String?, @RequestParam(required = false) limit: String?): ArrayList<Event> {
+        return eventService.getRoomEventsFromRoomId(roomId, since_id?.toLongOrNull(), limit?.toIntOrNull())
     }
 
     @GetMapping(
             value = ["/events/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
-    fun getMessageEvents(@RequestHeader(value = "Token", required = true) token: String, @PathVariable("id") roomId: Long): ArrayList<Event> {
-        return eventService.getMessageEventsFromRoomId(roomId)
+    fun getMessageEvents(@RequestHeader(value = "Token", required = true) token: String, @PathVariable("id") roomId: Long, @RequestParam(required = false) since_id: String?, @RequestParam(required = false) limit: String?): ArrayList<Event> {
+        return eventService.getMessageEventsFromRoomId(roomId, since_id?.toLongOrNull(), limit?.toIntOrNull())
     }
 }
