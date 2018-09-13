@@ -148,3 +148,8 @@ class RoomComparator : Comparator<Room> {
                 }
         }
 }
+
+data class Event(
+    var id: Long,
+    var target_id: Long
+)
