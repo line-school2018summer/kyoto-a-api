@@ -15,6 +15,20 @@ interface EventMapper {
     )
     fun findById(eventId: Long): Event
 
+    @Select(
+            """
+        SELECT id, event_type, target_id FROM events WHERE id=#{eventId} AND event_type=#{event_type} AND id >= #{sinceId} ORDER BY id limit #{limit}
+        """
+    )
+    fun findListById(eventId: Long, eventType: Long, sinceId: Long, limit: Int): ArrayList<Event>
+
+    @Select(
+            """
+        SELECT id, event_type, target_id FROM events WHERE id=#{eventId} AND id >= #{sinceId} ORDER BY id limit #{limit}
+        """
+    )
+    fun findListById(eventId: Long, sinceId: Long, limit: Int): ArrayList<Event>
+
     @Insert(
         """
         INSERT INTO events(event_type, target_id) VALUES(#{eventType}, #{targetId})
