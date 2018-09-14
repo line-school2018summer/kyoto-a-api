@@ -23,6 +23,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
+import java.sql.Timestamp
 
 
 @Controller
@@ -33,9 +34,9 @@ class WebsocketController(private val roomService: RoomService,
                      private val authGateway: AuthGateway) {
     @MessageMapping("/hello")
     @SendTo("/topic/greetings") // メッセージの宛先を指定
-    fun greeting(message: Message): Event {
+    fun greeting(message: Message): Message {
         TimeUnit.SECONDS.sleep(3)
-        return Event(2,3,4,5,5)
+        return Message(2, 1, 1, "test", message.user_name, Timestamp(1L), Timestamp(1L))
     }
 }
 
