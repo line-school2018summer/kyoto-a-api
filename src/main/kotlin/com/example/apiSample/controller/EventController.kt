@@ -39,6 +39,18 @@ class EventController(private val eventService: EventService, private val userSe
     }
 
     @GetMapping(
+            value = ["/events/rooms"],
+            produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun getRoomsEvents(@RequestHeader(value = "Token", required = true) token: String, @RequestParam(required = false) since_id: String?, @RequestParam(required = false) limit: String?): ArrayList<Event> {
+        val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
+        val user = userService.findByUid(uid)
+        val rooms = roomService.getRoomsFromUserId(user.id)
+        val roomIds = rooms.map { it.id }
+        return eventService.getRoomEventsFromRoomIds(roomIds, since_id?.toLongOrNull(), limit?.toIntOrNull())
+    }
+
+    @GetMapping(
             value = ["/events/rooms/{id}/messages"],
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
