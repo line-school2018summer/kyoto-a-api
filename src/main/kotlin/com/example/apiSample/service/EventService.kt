@@ -1,11 +1,23 @@
 package com.example.apiSample.service
 
+import com.example.apiSample.controller.WebsocketController
+import com.example.apiSample.firebase.AuthGateway
 import com.example.apiSample.mapper.EventMapper
 import com.example.apiSample.model.*
+import com.sun.org.apache.xpath.internal.operations.Bool
 import org.springframework.stereotype.Service
+import java.sql.Timestamp
+import org.springframework.messaging.simp.SimpMessagingTemplate
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.messaging.MessagingException
+
 
 @Service
 class EventService(private val eventMapper: EventMapper) {
+
+    @Autowired
+    var simpMessagingTemplate: SimpMessagingTemplate? = null
+
     fun getEventFromId(eventId: Long): Event {
         return eventMapper.findById(eventId)
     }
@@ -50,7 +62,41 @@ class EventService(private val eventMapper: EventMapper) {
                 user_id = user_id,
                 message_id = message_id
         )
-        // eventからフック
+        publishEvent(new_event)
         return new_event
+    }
+
+    fun publishEvent(event: Event): Boolean {
+        try {
+            when (event.event_type) {
+                EventTypes.PROFILE_UPDATED.ordinal -> {
+                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "profile_updated", Timestamp(1L), Timestamp(1L)))
+                }
+                EventTypes.ROOM_CREATED.ordinal -> {
+                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "room_created", Timestamp(1L), Timestamp(1L)))
+                }
+                EventTypes.ROOM_UPDATED.ordinal -> {
+                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "room_updated", Timestamp(1L), Timestamp(1L)))
+                }
+                EventTypes.ROOM_MEMBER_JOINED.ordinal -> {
+                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "room_member_joined", Timestamp(1L), Timestamp(1L)))
+                }
+                EventTypes.ROOM_MEMBER_LEAVED.ordinal, EventTypes.ROOM_MEMBER_DELETED.ordinal -> {
+                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "room_member_leaved", Timestamp(1L), Timestamp(1L)))
+                }
+                EventTypes.MESSAGE_SENT.ordinal -> {
+                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "message_sent", Timestamp(1L), Timestamp(1L)))
+                }
+                EventTypes.MESSAGE_UPDATED.ordinal -> {
+                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "message_updated", Timestamp(1L), Timestamp(1L)))
+                }
+                EventTypes.MESSAGE_DELETED.ordinal -> {
+                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "message_deleted", Timestamp(1L), Timestamp(1L)))
+                }
+            }
+        } catch (e: MessagingException) {
+            return false
+        }
+        return true
     }
 }
