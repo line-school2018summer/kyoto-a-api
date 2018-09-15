@@ -1,12 +1,8 @@
 package com.example.apiSample.service
 
-import com.example.apiSample.controller.WebsocketController
-import com.example.apiSample.firebase.AuthGateway
 import com.example.apiSample.mapper.EventMapper
 import com.example.apiSample.model.*
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.springframework.stereotype.Service
-import java.sql.Timestamp
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.MessagingException
@@ -48,50 +44,51 @@ class EventService(private val eventMapper: EventMapper) {
     }
 
     fun createEvent(event_type: Int, room_id: Long?, user_id: Long?, message_id: Long?): Event {
-        val create_event = InsertEvent(
+        val createEvent = InsertEvent(
             event_type = event_type,
             room_id = room_id,
             user_id = user_id,
             message_id = message_id
         )
-        val event_id = eventMapper.createEvent(create_event)
-        val new_event = Event(
-                id = event_id,
+        val eventId = eventMapper.createEvent(createEvent)
+        val newEvent = Event(
+                id = eventId,
                 event_type = event_type,
                 room_id = room_id,
                 user_id = user_id,
                 message_id = message_id
         )
-        publishEvent(new_event)
-        return new_event
+        publishEvent(newEvent)
+        return newEvent
     }
 
     fun publishEvent(event: Event): Boolean {
+        val messageTemplate = simpMessagingTemplate ?: return false
         try {
             when (event.event_type) {
                 EventTypes.PROFILE_UPDATED.ordinal -> {
-                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "profile_updated", Timestamp(1L), Timestamp(1L)))
+                    messageTemplate.convertAndSend("/topic/users", event)
                 }
                 EventTypes.ROOM_CREATED.ordinal -> {
-                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "room_created", Timestamp(1L), Timestamp(1L)))
+                    messageTemplate.convertAndSend("/topic/rooms", event)
                 }
                 EventTypes.ROOM_UPDATED.ordinal -> {
-                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "room_updated", Timestamp(1L), Timestamp(1L)))
+                    messageTemplate.convertAndSend("/topic/rooms", event)
                 }
                 EventTypes.ROOM_MEMBER_JOINED.ordinal -> {
-                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "room_member_joined", Timestamp(1L), Timestamp(1L)))
+                    messageTemplate.convertAndSend("/topic/rooms", event)
                 }
                 EventTypes.ROOM_MEMBER_LEAVED.ordinal, EventTypes.ROOM_MEMBER_DELETED.ordinal -> {
-                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "room_member_leaved", Timestamp(1L), Timestamp(1L)))
+                    messageTemplate.convertAndSend("/topic/rooms", event)
                 }
                 EventTypes.MESSAGE_SENT.ordinal -> {
-                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "message_sent", Timestamp(1L), Timestamp(1L)))
+                    messageTemplate.convertAndSend("/topic/rooms/" + event.room_id.toString() + "/messages", event)
                 }
                 EventTypes.MESSAGE_UPDATED.ordinal -> {
-                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "message_updated", Timestamp(1L), Timestamp(1L)))
+                    messageTemplate.convertAndSend("/topic/rooms/" + event.room_id.toString() + "/messages", event)
                 }
                 EventTypes.MESSAGE_DELETED.ordinal -> {
-                    simpMessagingTemplate?.convertAndSend("/topic/greetings", Message(2, 1, 1, "test", "message_deleted", Timestamp(1L), Timestamp(1L)))
+                    messageTemplate.convertAndSend("/topic/rooms/" + event.room_id.toString() + "/messages", event)
                 }
             }
         } catch (e: MessagingException) {
