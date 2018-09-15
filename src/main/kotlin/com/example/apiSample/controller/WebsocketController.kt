@@ -16,6 +16,9 @@ import org.springframework.stereotype.Controller
 import java.util.concurrent.TimeUnit
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
+import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry
+import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
@@ -38,7 +41,9 @@ class WebsocketController(private val roomService: RoomService,
 
 @EnableWebSocketMessageBroker // WebSocketのメッセージブローカーのBean定義を有効化する
 @Configuration
-class WebSocketConfig : WebSocketMessageBrokerConfigurer { // AbstractWebSocketMessageBrokerConfigurerを継承しWebSocket関連のBean定義をカスタマイズする
+class WebSocketConfig : WebSocketMessageBrokerConfigurer, AbstractSecurityWebSocketMessageBrokerConfigurer() { // AbstractWebSocketMessageBrokerConfigurerを継承しWebSocket関連のBean定義をカスタマイズする
+
+    private val authorities = arrayOf("VIEW_SCRIPT_TAB", "VIEW_CREDS_TAB")
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/hello").withSockJS() // WebSocketのエンドポイント (接続時に指定するエンドポイント)を指定
@@ -49,4 +54,12 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer { // AbstractWebSocketM
         registry.enableSimpleBroker("/topic", "/queue") // Topic(Pub-Sub)とQueue(P2P)を有効化 >>> メッセージブローカーがハンドリングする
     }
 
+    @Override
+    override fun configureInbound(message: MessageSecurityMetadataSourceRegistry) {
+        message
+                .nullDestMatcher().permitAll()
+                .simpDestMatchers("/app/**").hasAnyAuthority(*authorities)
+                .simpSubscribeDestMatchers("/topic/" + "**").permitAll()
+        .anyMessage().denyAll()
+    }
 }
