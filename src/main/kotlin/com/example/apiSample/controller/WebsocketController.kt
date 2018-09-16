@@ -18,11 +18,19 @@ import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 import java.sql.Timestamp
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.authorization.AuthenticatedReactiveAuthorizationManager.authenticated
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 
 
 @Controller
@@ -43,8 +51,6 @@ class WebsocketController(private val roomService: RoomService,
 @Configuration
 class WebSocketConfig : WebSocketMessageBrokerConfigurer, AbstractSecurityWebSocketMessageBrokerConfigurer() { // AbstractWebSocketMessageBrokerConfigurerを継承しWebSocket関連のBean定義をカスタマイズする
 
-    private val authorities = arrayOf("VIEW_SCRIPT_TAB", "VIEW_CREDS_TAB")
-
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/hello").withSockJS() // WebSocketのエンドポイント (接続時に指定するエンドポイント)を指定
     }
@@ -54,12 +60,27 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer, AbstractSecurityWebSoc
         registry.enableSimpleBroker("/topic", "/queue") // Topic(Pub-Sub)とQueue(P2P)を有効化 >>> メッセージブローカーがハンドリングする
     }
 
-    @Override
     override fun configureInbound(message: MessageSecurityMetadataSourceRegistry) {
         message
                 .nullDestMatcher().permitAll()
-                .simpDestMatchers("/app/**").hasAnyAuthority(*authorities)
+                .simpDestMatchers("/app/**").permitAll()
                 .simpSubscribeDestMatchers("/topic/" + "**").permitAll()
-        .anyMessage().denyAll()
+        .anyMessage().permitAll()
+    }
+}
+
+//class CustomUserDetailsService: UserDetailsService {
+//    override fun loadUserByUsername(username: String?): UserDetails {
+//        return User("foo", "password", listOf(SimpleGrantedAuthority("admin")))
+//    }
+//}
+
+@EnableWebSecurity
+class MySecurityConfig: WebSecurityConfigurerAdapter() {
+    override fun configure(http: HttpSecurity) {
+        http.authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/my-login.jsp").permitAll()
+                .anyRequest().permitAll()
     }
 }
