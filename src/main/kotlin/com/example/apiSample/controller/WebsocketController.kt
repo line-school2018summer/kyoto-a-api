@@ -42,7 +42,7 @@ class WebsocketController(private val roomService: RoomService,
 class WebSocketConfig : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/hello").withSockJS() // WebSocketのエンドポイント (接続時に指定するエンドポイント)を指定
+        registry.addEndpoint("/hello") // WebSocketのエンドポイント (接続時に指定するエンドポイント)を指定
     }
 
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
