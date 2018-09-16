@@ -23,6 +23,12 @@
                 stompClient.subscribe('/topic/greetings', function (greeting) { // 挨拶の応答(/topic/greetings)を購読する
                     showGreeting('your name is ' + JSON.parse(greeting.body).user_name);
                 });
+                stompClient.subscribe('/topic/rooms', function (greeting) { // ルームの情報を購読する
+                    showGreeting('myroom changed room_id: ' + JSON.parse(greeting.body).room_id);
+                });
+                stompClient.subscribe('/topic/rooms/1/messages', function (greeting) { // ルーム1のメッセージを購読する
+                    showGreeting('new message to room 1 arrived! message_id: ' + JSON.parse(greeting.body).message_id);
+                });
             });
         }
 
