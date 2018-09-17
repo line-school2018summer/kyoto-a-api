@@ -29,6 +29,7 @@ import org.springframework.messaging.support.ChannelInterceptor
 import org.springframework.stereotype.Service
 
 
+// TODO: Websocketではクライアントからの送信は実装しないので、このコントローラも後で消す
 @Controller
 @Api(value = "api",description = "websocketに関するAPIです。")
 class WebsocketController(private val roomService: RoomService,
