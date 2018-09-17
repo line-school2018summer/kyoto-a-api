@@ -6,6 +6,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script type="text/javascript">
         var stompClient = null;
+        // Hoge君のToken(適宜書き換える)
+        var token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjE3ZTBmNDI1NjRlYjc0Y2FlNGZkNDhiZGE5ZjA0YmE2OTRmNDExNDQifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGluZS1zdW1tZXIta3lvdG8tYSIsIm5hbWUiOiJIb2dlIiwiYXVkIjoibGluZS1zdW1tZXIta3lvdG8tYSIsImF1dGhfdGltZSI6MTUzNzE2MjU1NywidXNlcl9pZCI6Ilg0b1JQV0pyUVVidlF3Rkx6RjlsOThwY3pkaDEiLCJzdWIiOiJYNG9SUFdKclFVYnZRd0ZMekY5bDk4cGN6ZGgxIiwiaWF0IjoxNTM3MTYyNTU3LCJleHAiOjE1MzcxNjYxNTcsImVtYWlsIjoiaG9nZUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiaG9nZUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.r42KFcizuBoGflP2YdRV3d4QOii0x9B1YGiP-gXPy7yFpDe3VCo0xykdo_Kr5r42RwOppfHVCiTj22H2XWiObJFXx0eQzAah-O2ytjrUj6LEj4f4sVcJel3kaVeieDLCqnTdl8y4lN7xcWoJytb2aewmujR-VwYC85UoqFxUPFCrc3tsIw2Hh4szKR-yKIVVZUYdLubIOBbyDFcaRzf1JsrgqYkxlBMfZJ0peZKKsEfM11X5ZIXe2VM2pyZU4dwTcW9GKBm-uaX6s6vrDs9C_9IbN2G2MoYK4OOyAtZJfzpUe9jyP4XVwDEE495vbRLhtqBosi31H4VchXgHD6ZTLQ";
 
         function setConnected(connected) {
             document.getElementById('connect').disabled = connected;
@@ -17,18 +19,21 @@
         function connect() {
             var socket = new WebSocket("ws://localhost:8080/hello"); // WebSocketに接続
             stompClient = Stomp.over(socket);
-            stompClient.connect({}, function (frame) {
+            stompClient.connect({Token: token}, function (frame) {
                 setConnected(true);
                 console.log('Connected: ' + frame);
                 stompClient.subscribe('/topic/greetings', function (greeting) { // 挨拶の応答(/topic/greetings)を購読する
                     showGreeting('your name is ' + JSON.parse(greeting.body).user_name);
-                });
+                }, {Token: token});
                 stompClient.subscribe('/topic/rooms', function (greeting) { // ルームの情報を購読する
                     showGreeting('myroom changed room_id: ' + JSON.parse(greeting.body).room_id);
-                });
-                stompClient.subscribe('/topic/rooms/1/messages', function (greeting) { // ルーム1のメッセージを購読する
+                }, {Token: token});
+                stompClient.subscribe('/topic/rooms/1/messages', function (greeting) { // ルーム1のメッセージを購読する(pinfortのローカル環境ではHogeくんは参加してるので成功する)
                     showGreeting('new message to room 1 arrived! message_id: ' + JSON.parse(greeting.body).message_id);
-                });
+                }, {Token: token});
+                stompClient.subscribe('/topic/rooms/3/messages', function (greeting) { // ルーム3のメッセージを購読する(pinfortのローカル環境ではHogeくんは参加していないのでエラーになる)
+                    showGreeting('new message to room 1 arrived! message_id: ' + JSON.parse(greeting.body).message_id);
+                }, {Token: token});
             });
         }
 

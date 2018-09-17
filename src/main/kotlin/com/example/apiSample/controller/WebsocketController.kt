@@ -1,26 +1,32 @@
 package com.example.apiSample.controller
 
-import com.example.apiSample.Requests.PostMessageRequest
 import com.example.apiSample.firebase.AuthGateway
 import com.example.apiSample.model.*
 import com.example.apiSample.service.MessageService
 import com.example.apiSample.service.RoomService
 import com.example.apiSample.service.UserService
 import io.swagger.annotations.Api
-import io.swagger.annotations.ApiModelProperty
-import io.swagger.annotations.ApiOperation
+import netscape.security.ForbiddenTargetException
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.MediaType
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.stereotype.Controller
 import java.util.concurrent.TimeUnit
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 import java.sql.Timestamp
+import org.springframework.web.socket.messaging.SessionSubscribeEvent
+import org.springframework.messaging.simp.SimpMessagingTemplate
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.event.EventListener
+import org.springframework.messaging.MessageChannel
+import org.springframework.messaging.simp.config.ChannelRegistration
+import org.springframework.messaging.simp.stomp.StompCommand
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor
+import org.springframework.messaging.support.ChannelInterceptor
+import org.springframework.stereotype.Service
 
 
 @Controller
@@ -39,7 +45,7 @@ class WebsocketController(private val roomService: RoomService,
 
 @EnableWebSocketMessageBroker // WebSocketのメッセージブローカーのBean定義を有効化する
 @Configuration
-class WebSocketConfig : WebSocketMessageBrokerConfigurer {
+class WebSocketConfig(private val userService: UserService, private val auth: AuthGateway, private val roomService: RoomService) : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/hello") // WebSocketのエンドポイント (接続時に指定するエンドポイント)を指定
@@ -48,5 +54,59 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
         registry.setApplicationDestinationPrefixes("/app") // アプリケーション(Controller)でハンドリングするエンドポイントのプレフィックス
         registry.enableSimpleBroker("/topic", "/queue") // Topic(Pub-Sub)とQueue(P2P)を有効化 >>> メッセージブローカーがハンドリングする
+    }
+
+    override fun configureClientInboundChannel(registration: ChannelRegistration) {
+        registration.interceptors(CustomChannelIntercepter(auth, userService, roomService))
+    }
+}
+
+// TODO: subscribe出来たことを確認するために追加しているだけで、本番ではクラスごと削除
+@Service
+class SomeSubscribeListener @Autowired
+constructor(private val template: SimpMessagingTemplate) {
+
+    @EventListener
+    fun handleSubscribeEvent(event: SessionSubscribeEvent) {
+        val des = (event.message.headers["nativeHeaders"] as Map<*, *>)["destination"].toString().replace("[", "").replace("]", "")
+        template.convertAndSend("/topic/greetings", "{\"user_name\": \"ON_SUBSCRIBE FOR %s\"}".format(des))
+    }
+}
+
+class CustomChannelIntercepter(private val auth: AuthGateway, private val userService: UserService, private val roomService: RoomService): ChannelInterceptor {
+
+    override fun preSend(message: org.springframework.messaging.Message<*>, channel: MessageChannel): org.springframework.messaging.Message<*>? {
+        val headerAccessor: StompHeaderAccessor = StompHeaderAccessor.wrap(message)
+        if (StompCommand.SUBSCRIBE.equals(headerAccessor.command)) {
+            // TODO: roomsに参加したルームの情報だけ送る(むずそう)
+            val token = getTokenFromMessage(message)
+            val user = getUserFromToken(token)
+            val destination = getDestinationFromMessage(message)
+            val reg = Regex("^/topic/rooms/([0-9]+)/messages$")
+            val match = reg.find(destination)
+            if (match != null) {
+                // [0]には全体が入り、[1]にキャプチャしたルームidが入る
+                val roomId = match.groupValues[1].toLong()
+                if (!roomService.isUserExist(user.id, roomId)){
+                    throw ForbiddenTargetException("you don't have permission for room id %d".format(roomId))
+                }
+            }
+        }
+        return message
+    }
+
+    fun getTokenFromMessage(message: org.springframework.messaging.Message<*>): String {
+        val headers = message.headers["nativeHeaders"] as Map<*, *>
+        return headers["Token"].toString().replace("[", "").replace("]", "")
+    }
+
+    fun getDestinationFromMessage(message: org.springframework.messaging.Message<*>): String {
+        val headers = message.headers["nativeHeaders"] as Map<*, *>
+        return headers["destination"].toString().replace("[", "").replace("]", "")
+    }
+
+    fun getUserFromToken(token: String): User {
+        val uid = auth.verifyIdToken(token) ?: throw UnauthorizedException("Your token is invalid.")
+        return userService.findByUid(uid)
     }
 }
