@@ -169,7 +169,7 @@ data class Event(
 )
 
 data class InsertEvent(
-    var id: Long? = null,
+    var id: Long = 0,
     var event_type: Int,
     var room_id: Long?,
     var user_id: Long?,

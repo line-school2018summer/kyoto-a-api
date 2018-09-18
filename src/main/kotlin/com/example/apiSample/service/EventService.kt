@@ -51,9 +51,9 @@ class EventService(private val eventMapper: EventMapper, private val userMapper:
             user_id = user_id,
             message_id = message_id
         )
-        val eventId = eventMapper.createEvent(createEvent)
+        eventMapper.createEvent(createEvent)
         val newEvent = Event(
-                id = eventId,
+                id = createEvent.id,
                 event_type = event_type,
                 room_id = room_id,
                 user_id = user_id,
@@ -64,6 +64,7 @@ class EventService(private val eventMapper: EventMapper, private val userMapper:
     }
 
     fun publishEvent(event: Event): Boolean {
+        println(event)
         val messageTemplate = simpMessagingTemplate ?: return false
         try {
             when (event.event_type) {
