@@ -55,6 +55,11 @@ class EventController(private val eventService: EventService, private val userSe
             produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
     )
     fun getMessageEvents(@RequestHeader(value = "Token", required = true) token: String, @PathVariable("id") roomId: Long, @RequestParam(required = false) since_id: String?, @RequestParam(required = false) limit: String?): ArrayList<Event> {
+        val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
+        val user = userService.findByUid(uid)
+        if (!roomService.isUserExist(user.id, roomId)) {
+            throw BadRequestException("has no permission")
+        }
         return eventService.getMessageEventsFromRoomId(roomId, since_id?.toLongOrNull(), limit?.toIntOrNull())
     }
 }
