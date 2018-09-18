@@ -1,6 +1,7 @@
 package com.example.apiSample.service
 
 import com.example.apiSample.mapper.EventMapper
+import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.model.*
 import org.springframework.stereotype.Service
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -9,7 +10,7 @@ import org.springframework.messaging.MessagingException
 
 
 @Service
-class EventService(private val eventMapper: EventMapper) {
+class EventService(private val eventMapper: EventMapper, private val userMapper: UserMapper) {
 
     @Autowired
     var simpMessagingTemplate: SimpMessagingTemplate? = null
@@ -69,30 +70,33 @@ class EventService(private val eventMapper: EventMapper) {
                 EventTypes.PROFILE_UPDATED.ordinal -> {
                     messageTemplate.convertAndSend("/topic/users", event)
                 }
-                EventTypes.ROOM_CREATED.ordinal -> {
-                    messageTemplate.convertAndSend("/topic/rooms", event)
+                EventTypes.ROOM_CREATED.ordinal,
+                EventTypes.ROOM_UPDATED.ordinal,
+                EventTypes.ROOM_MEMBER_JOINED.ordinal,
+                EventTypes.ROOM_MEMBER_LEAVED.ordinal,
+                EventTypes.ROOM_MEMBER_DELETED.ordinal -> {
+                    publishRoomEventForUsers(event)
                 }
-                EventTypes.ROOM_UPDATED.ordinal -> {
-                    messageTemplate.convertAndSend("/topic/rooms", event)
-                }
-                EventTypes.ROOM_MEMBER_JOINED.ordinal -> {
-                    messageTemplate.convertAndSend("/topic/rooms", event)
-                }
-                EventTypes.ROOM_MEMBER_LEAVED.ordinal, EventTypes.ROOM_MEMBER_DELETED.ordinal -> {
-                    messageTemplate.convertAndSend("/topic/rooms", event)
-                }
-                EventTypes.MESSAGE_SENT.ordinal -> {
-                    messageTemplate.convertAndSend("/topic/rooms/" + event.room_id.toString() + "/messages", event)
-                }
-                EventTypes.MESSAGE_UPDATED.ordinal -> {
-                    messageTemplate.convertAndSend("/topic/rooms/" + event.room_id.toString() + "/messages", event)
-                }
+                EventTypes.MESSAGE_SENT.ordinal,
+                EventTypes.MESSAGE_UPDATED.ordinal,
                 EventTypes.MESSAGE_DELETED.ordinal -> {
+                    event.room_id ?: return false
                     messageTemplate.convertAndSend("/topic/rooms/" + event.room_id.toString() + "/messages", event)
                 }
             }
         } catch (e: MessagingException) {
             return false
+        }
+        return true
+    }
+
+    fun publishRoomEventForUsers(event: Event): Boolean {
+        val messageTemplate = simpMessagingTemplate ?: return false
+        val roomId = event.room_id ?: return false
+        // roomServiceを呼ぶと定義がループするのでuserMapperを直接呼ぶ
+        val members: ArrayList<UserList> = userMapper.findByRoomId(roomId)
+        for (user in members) {
+            messageTemplate.convertAndSend("/topic/users/%d/rooms".format(user.id), event)
         }
         return true
     }

@@ -7,8 +7,7 @@
     <script type="text/javascript">
         var stompClient = null;
         // Hoge君のToken(適宜書き換える)
-        var token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjE3ZTBmNDI1NjRlYjc0Y2FlNGZkNDhiZGE5ZjA0YmE2OTRmNDExNDQifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGluZS1zdW1tZXIta3lvdG8tYSIsIm5hbWUiOiJIb2dlIiwiYXVkIjoibGluZS1zdW1tZXIta3lvdG8tYSIsImF1dGhfdGltZSI6MTUzNzE2MjU1NywidXNlcl9pZCI6Ilg0b1JQV0pyUVVidlF3Rkx6RjlsOThwY3pkaDEiLCJzdWIiOiJYNG9SUFdKclFVYnZRd0ZMekY5bDk4cGN6ZGgxIiwiaWF0IjoxNTM3MTYyNTU3LCJleHAiOjE1MzcxNjYxNTcsImVtYWlsIjoiaG9nZUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiaG9nZUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.r42KFcizuBoGflP2YdRV3d4QOii0x9B1YGiP-gXPy7yFpDe3VCo0xykdo_Kr5r42RwOppfHVCiTj22H2XWiObJFXx0eQzAah-O2ytjrUj6LEj4f4sVcJel3kaVeieDLCqnTdl8y4lN7xcWoJytb2aewmujR-VwYC85UoqFxUPFCrc3tsIw2Hh4szKR-yKIVVZUYdLubIOBbyDFcaRzf1JsrgqYkxlBMfZJ0peZKKsEfM11X5ZIXe2VM2pyZU4dwTcW9GKBm-uaX6s6vrDs9C_9IbN2G2MoYK4OOyAtZJfzpUe9jyP4XVwDEE495vbRLhtqBosi31H4VchXgHD6ZTLQ";
-
+        var token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjE3ZTBmNDI1NjRlYjc0Y2FlNGZkNDhiZGE5ZjA0YmE2OTRmNDExNDQifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGluZS1zdW1tZXIta3lvdG8tYSIsIm5hbWUiOiJIb2dlIiwiYXVkIjoibGluZS1zdW1tZXIta3lvdG8tYSIsImF1dGhfdGltZSI6MTUzNzI0NDY4MCwidXNlcl9pZCI6Ilg0b1JQV0pyUVVidlF3Rkx6RjlsOThwY3pkaDEiLCJzdWIiOiJYNG9SUFdKclFVYnZRd0ZMekY5bDk4cGN6ZGgxIiwiaWF0IjoxNTM3MjQ0NjgxLCJleHAiOjE1MzcyNDgyODEsImVtYWlsIjoiaG9nZUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiaG9nZUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.rb9TKDRMSUfmdxn6HfvqRKvT6lZQe0dSw6EUPVOG7ULRfxVlq010vhF3F6reYcxD9xCfdYC_lCgkGC0-5v2U3Ax7954dLtx3qnBbYmpKf5OlWSGJEhxLvBDCBOJjjNtN5t23N09GEAMIRQTyAYw819Sx8ZktRT85HMlqbN0skE6p4C_jWKBncEKrEHVkilZx61TXCk6RubbyiIhXqKz0kHf7cDCc1OnDZ1rSo3I24DAQh2beqV07R5SceUHvgjTBTL9yjj26tyaUJplmnCBF1o3xntDcgsa_9ilLVTnTawb4xlb-RtvVQYh11MDVt7AiMGG0YhKxobsrwTsoeSNpfA";
         function setConnected(connected) {
             document.getElementById('connect').disabled = connected;
             document.getElementById('disconnect').disabled = !connected;
@@ -33,6 +32,12 @@
                 }, {Token: token});
                 stompClient.subscribe('/topic/rooms/3/messages', function (greeting) { // ルーム3のメッセージを購読する(pinfortのローカル環境ではHogeくんは参加していないのでエラーになる)
                     showGreeting('new message to room 1 arrived! message_id: ' + JSON.parse(greeting.body).message_id);
+                }, {Token: token});
+                stompClient.subscribe('/topic/users/7/rooms', function (greeting) { // ユーザー7用のルームイベントを購読する（pinfortのローカルではhoge君はid7なので成功する）
+                    showGreeting('new event for rooms arrivied! room_id: ' + JSON.parse(greeting.body).room_id);
+                }, {Token: token});
+                stompClient.subscribe('/topic/users/1/rooms', function (greeting) { // ユーザー1用のルームイベントを購読する（pinfortのローカルではhoge君はid7なので失敗する）
+                    showGreeting('new event for rooms arrivied! room_id: ' + JSON.parse(greeting.body).room_id);
                 }, {Token: token});
             });
         }

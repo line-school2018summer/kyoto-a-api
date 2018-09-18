@@ -76,22 +76,36 @@ constructor(private val template: SimpMessagingTemplate) {
 
 class CustomChannelIntercepter(private val auth: AuthGateway, private val userService: UserService, private val roomService: RoomService): ChannelInterceptor {
 
+    val messagesReg = Regex("^/topic/rooms/([0-9]+)/messages$")
+    val roomsReg = Regex("^/topic/users/([0-9]+)/rooms$")
+
     override fun preSend(message: org.springframework.messaging.Message<*>, channel: MessageChannel): org.springframework.messaging.Message<*>? {
         val headerAccessor: StompHeaderAccessor = StompHeaderAccessor.wrap(message)
         if (StompCommand.SUBSCRIBE.equals(headerAccessor.command)) {
-            // TODO: roomsに参加したルームの情報だけ送る(むずそう)
             val token = getTokenFromMessage(message)
             val user = getUserFromToken(token)
             val destination = getDestinationFromMessage(message)
-            val reg = Regex("^/topic/rooms/([0-9]+)/messages$")
-            val match = reg.find(destination)
-            if (match != null) {
+
+            // rooms auth start
+            val roomsMatch = roomsReg.find(destination)
+            if (roomsMatch != null)  {
+                val userId = roomsMatch.groupValues[1].toLong()
+                if (userId != user.id) {
+                    throw ForbiddenTargetException("you don't have permission for user id %d".format(userId))
+                }
+            }
+            // rooms auth end
+
+            // messages auth start
+            val messagesMatch = messagesReg.find(destination)
+            if (messagesMatch != null) {
                 // [0]には全体が入り、[1]にキャプチャしたルームidが入る
-                val roomId = match.groupValues[1].toLong()
+                val roomId = messagesMatch.groupValues[1].toLong()
                 if (!roomService.isUserExist(user.id, roomId)){
                     throw ForbiddenTargetException("you don't have permission for room id %d".format(roomId))
                 }
             }
+            // messages auth end
         }
         return message
     }
