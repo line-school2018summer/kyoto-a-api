@@ -53,9 +53,27 @@ data class Room(
         @get:JsonProperty("updated_at") var updatedAt: Timestamp
 )
 
-data class RoomList(
+data class IconRoom(
+
+        @ApiModelProperty(example="1", position=0)
         var id: Long,
-        var name: String
+
+        @ApiModelProperty(example="海外旅行ぐる", position=1)
+        var name: String,
+
+        var icon: String?,
+
+        @ApiModelProperty(position=2,example = "こんにちは")
+        var last_message_text: String?,
+
+        @ApiModelProperty(position=3, example="2018-08-24T00:00:00.000+0000")
+        @get:JsonProperty("last_message_created_at") var last_message_created_at: Timestamp?,
+
+        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=4)
+        @get:JsonProperty("created_at") var createdAt: Timestamp,
+
+        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=5)
+        @get:JsonProperty("updated_at") var updatedAt: Timestamp
 )
 
 data class UserRoom(
