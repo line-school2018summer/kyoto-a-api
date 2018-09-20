@@ -5,7 +5,11 @@ import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.mapper.RoomMapper
 import com.example.apiSample.mapper.UserRoomMapper
 import com.example.apiSample.model.*
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
+import java.nio.file.Files
+import java.nio.file.Paths
 
 data class InsertRoom (
         var id: Long = 0,
@@ -17,6 +21,9 @@ class RoomService(private val roomMapper: RoomMapper,
                   private val userRoomMapper: UserRoomMapper,
                   private val userMapper: UserMapper,
                   private val eventService: EventService) {
+
+    @Autowired
+    lateinit var fileStorage: FileStorage
 
     fun getRoomFromId(roomId: Long): Room {
         val room: Room = roomFromRoomForMapping(roomMapper.findByRoomId(roomId) ?: throw BadRequestException("no room found"))
@@ -74,7 +81,6 @@ class RoomService(private val roomMapper: RoomMapper,
     }
 
     fun roomFromRoomForMapping(room_for_mapping: RoomForMapping): Room {
-
         val room = Room(
                 id = room_for_mapping.room_id,
                 name = room_for_mapping.room_name,
@@ -83,10 +89,26 @@ class RoomService(private val roomMapper: RoomMapper,
                 createdAt = room_for_mapping.room_created_at,
                 updatedAt = room_for_mapping.room_updated_at
         )
-
-
-
-
         return room
+    }
+
+    fun getIconRoom(id: Long): IconRoom {
+        return roomMapper.getIconRoom(id)
+    }
+
+    fun setIcon(id: Long, location: String, file: MultipartFile){
+        val type = fileStorage.checkFileType(file)
+        val fileName = id.toString() + type
+        fileStorage.store(file, location, fileName)
+        roomMapper.setIcon(id, fileName)
+    }
+
+    fun deleteIcon(id: Long, location: String){
+        val icon = getIconRoom(id).icon
+        if(icon != null) {
+            val prevFile = Paths.get(location).resolve(icon)
+            roomMapper.setIcon(id, null)
+            Files.delete(prevFile)
+        }
     }
 }
