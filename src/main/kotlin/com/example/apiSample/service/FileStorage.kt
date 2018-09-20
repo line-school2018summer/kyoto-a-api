@@ -26,7 +26,7 @@ import java.io.ByteArrayOutputStream
 
   //ファイルの保存をする関数です
   fun store(file: MultipartFile, location: String, filename: String){
-    Files.copy(file.getInputStream(), Paths.get(location).resolve(filename))
+    Files.copy(file.getInputStream(), Paths.get(location, filename))
   }
 
   //ファイルを読み込みます

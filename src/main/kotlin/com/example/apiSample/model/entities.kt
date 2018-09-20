@@ -63,12 +63,6 @@ data class IconRoom(
 
         var icon: String?,
 
-        @ApiModelProperty(position=2,example = "こんにちは")
-        var last_message_text: String?,
-
-        @ApiModelProperty(position=3, example="2018-08-24T00:00:00.000+0000")
-        @get:JsonProperty("last_message_created_at") var last_message_created_at: Timestamp?,
-
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=4)
         @get:JsonProperty("created_at") var createdAt: Timestamp,
 

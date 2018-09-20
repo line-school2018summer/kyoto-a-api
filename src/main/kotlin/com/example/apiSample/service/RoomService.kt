@@ -5,6 +5,8 @@ import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.mapper.RoomMapper
 import com.example.apiSample.mapper.UserRoomMapper
 import com.example.apiSample.model.*
+import com.example.apiSample.util.ByteArrayToMultipartFile
+import com.example.apiSample.util.ImageResizer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -97,9 +99,11 @@ class RoomService(private val roomMapper: RoomMapper,
     }
 
     fun setIcon(id: Long, location: String, file: MultipartFile){
+        val resized_image = ImageResizer(file.bytes).resize()
         val type = fileStorage.checkFileType(file)
+        val resized_file = ByteArrayToMultipartFile(resized_image, file.name, file.originalFilename, type)
         val fileName = id.toString() + type
-        fileStorage.store(file, location, fileName)
+        fileStorage.store(resized_file, location, fileName)
         roomMapper.setIcon(id, fileName)
     }
 

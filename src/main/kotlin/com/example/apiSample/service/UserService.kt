@@ -4,6 +4,8 @@ import com.example.apiSample.controller.BadRequestException
 import com.example.apiSample.firebase.FirebaseGateway
 import com.example.apiSample.mapper.UserMapper
 import com.example.apiSample.model.*
+import com.example.apiSample.util.ByteArrayToMultipartFile
+import com.example.apiSample.util.ImageResizer
 import org.apache.ibatis.jdbc.Null
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,9 +51,11 @@ class UserService(private val userMapper: UserMapper, private val eventService: 
     }
 
     fun setIcon(id: Long, location: String, file: MultipartFile){
+        val resized_image = ImageResizer(file.bytes).resize()
         val type = fileStorage.checkFileType(file)
+        val resized_file = ByteArrayToMultipartFile(resized_image, file.name, file.originalFilename, type)
         val fileName = id.toString() + type
-        fileStorage.store(file, location, fileName)
+        fileStorage.store(resized_file, location, fileName)
         userMapper.setIcon(id, fileName)
     }
 
