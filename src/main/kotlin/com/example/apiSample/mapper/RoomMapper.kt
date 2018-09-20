@@ -2,7 +2,7 @@ package com.example.apiSample.mapper
 
 import com.example.apiSample.model.Room
 import com.example.apiSample.model.RoomForMapping
-import com.example.apiSample.model.RoomList
+import com.example.apiSample.model.IconRoom
 import com.example.apiSample.service.InsertRoom
 import org.apache.ibatis.annotations.*
 
@@ -52,4 +52,18 @@ interface RoomMapper {
         """
     )
     fun deleteRoom(roomId: Long): Boolean
+
+    @Select(
+            """
+          SELECT id, name, icon, created_at, updated_at FROM rooms WHERE id=#{id}
+        """
+    )
+    fun getIconRoom(id: Long): IconRoom
+
+    @Update(
+            """
+          UPDATE rooms SET icon=#{icon} WHERE id=#{id}
+        """
+    )
+    fun setIcon(id: Long, icon: String?): Unit
 }
