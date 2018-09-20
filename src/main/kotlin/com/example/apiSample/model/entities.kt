@@ -159,3 +159,31 @@ class RoomComparator : Comparator<Room> {
                 }
         }
 }
+
+data class Event(
+    var id: Long,
+    var event_type: Int,
+    var room_id: Long?,
+    var user_id: Long?,
+    var message_id: Long?
+)
+
+data class InsertEvent(
+    var id: Long = 0,
+    var event_type: Int,
+    var room_id: Long?,
+    var user_id: Long?,
+    var message_id: Long?
+)
+
+enum class EventTypes {
+    PROFILE_UPDATED,
+    ROOM_CREATED,
+    ROOM_UPDATED,
+    ROOM_MEMBER_JOINED,
+    ROOM_MEMBER_LEAVED,
+    ROOM_MEMBER_DELETED,
+    MESSAGE_SENT,
+    MESSAGE_UPDATED,
+    MESSAGE_DELETED,
+}

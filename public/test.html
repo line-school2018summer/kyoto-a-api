@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+    <script src="http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+        // Hoge君のToken(適宜書き換える)
+        var token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjE3ZTBmNDI1NjRlYjc0Y2FlNGZkNDhiZGE5ZjA0YmE2OTRmNDExNDQifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbGluZS1zdW1tZXIta3lvdG8tYSIsIm5hbWUiOiJIb2dlIiwiYXVkIjoibGluZS1zdW1tZXIta3lvdG8tYSIsImF1dGhfdGltZSI6MTUzNzI0NDY4MCwidXNlcl9pZCI6Ilg0b1JQV0pyUVVidlF3Rkx6RjlsOThwY3pkaDEiLCJzdWIiOiJYNG9SUFdKclFVYnZRd0ZMekY5bDk4cGN6ZGgxIiwiaWF0IjoxNTM3MjQ0NjgxLCJleHAiOjE1MzcyNDgyODEsImVtYWlsIjoiaG9nZUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiaG9nZUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.rb9TKDRMSUfmdxn6HfvqRKvT6lZQe0dSw6EUPVOG7ULRfxVlq010vhF3F6reYcxD9xCfdYC_lCgkGC0-5v2U3Ax7954dLtx3qnBbYmpKf5OlWSGJEhxLvBDCBOJjjNtN5t23N09GEAMIRQTyAYw819Sx8ZktRT85HMlqbN0skE6p4C_jWKBncEKrEHVkilZx61TXCk6RubbyiIhXqKz0kHf7cDCc1OnDZ1rSo3I24DAQh2beqV07R5SceUHvgjTBTL9yjj26tyaUJplmnCBF1o3xntDcgsa_9ilLVTnTawb4xlb-RtvVQYh11MDVt7AiMGG0YhKxobsrwTsoeSNpfA";
+        function setConnected(connected) {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+            document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
+            document.getElementById('response').innerHTML = '';
+        }
+
+        function connect() {
+            var socket = new WebSocket("ws://localhost:8080/hello"); // WebSocketに接続
+            stompClient = Stomp.over(socket);
+            stompClient.connect({Token: token}, function (frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/greetings', function (greeting) { // 挨拶の応答(/topic/greetings)を購読する
+                    showGreeting('your name is ' + JSON.parse(greeting.body).user_name);
+                }, {Token: token});
+                stompClient.subscribe('/topic/rooms', function (greeting) { // ルームの情報を購読する
+                    showGreeting('myroom changed room_id: ' + JSON.parse(greeting.body).room_id);
+                }, {Token: token});
+                stompClient.subscribe('/topic/rooms/1/messages', function (greeting) { // ルーム1のメッセージを購読する(pinfortのローカル環境ではHogeくんは参加してるので成功する)
+                    showGreeting('new message to room 1 arrived! message_id: ' + JSON.parse(greeting.body).message_id);
+                }, {Token: token});
+                stompClient.subscribe('/topic/rooms/3/messages', function (greeting) { // ルーム3のメッセージを購読する(pinfortのローカル環境ではHogeくんは参加していないのでエラーになる)
+                    showGreeting('new message to room 1 arrived! message_id: ' + JSON.parse(greeting.body).message_id);
+                }, {Token: token});
+                stompClient.subscribe('/topic/users/7/rooms', function (greeting) { // ユーザー7用のルームイベントを購読する（pinfortのローカルではhoge君はid7なので成功する）
+                    showGreeting('new event for rooms arrivied! room_id: ' + JSON.parse(greeting.body).room_id);
+                }, {Token: token});
+                stompClient.subscribe('/topic/users/1/rooms', function (greeting) { // ユーザー1用のルームイベントを購読する（pinfortのローカルではhoge君はid7なので失敗する）
+                    showGreeting('new event for rooms arrivied! room_id: ' + JSON.parse(greeting.body).room_id);
+                }, {Token: token});
+            });
+        }
+
+        function disconnect() {
+            if (stompClient != null) {
+                stompClient.disconnect();
+            }
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function sendName() {
+            var name = document.getElementById('name').value;
+            stompClient.send("/app/hello", {}, JSON.stringify({'id': 1, 'room_id': 1, 'user_id': 1, 'text': 'test', 'user_name': name, 'created_at': 1, 'updated_at': 1})); // メッセージを送信
+        }
+
+        function showGreeting(message) {
+            var response = document.getElementById('response');
+            var p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+            p.appendChild(document.createTextNode(message));
+            response.appendChild(p);
+        }
+    </script>
+</head>
+<body onload="disconnect()">
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div>
+    <div>
+        <button id="connect" onclick="connect();">Connect</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+    </div>
+    <div id="conversationDiv">
+        <label>What is your name?</label><input type="text" id="name"/>
+        <button id="sendName" onclick="sendName();">Send</button>
+        <p id="response"></p>
+    </div>
+</div>
+</body>
+</html>

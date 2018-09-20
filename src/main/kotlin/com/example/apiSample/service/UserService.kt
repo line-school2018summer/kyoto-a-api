@@ -13,7 +13,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 @Service
-class UserService(private val userMapper: UserMapper) {
+class UserService(private val userMapper: UserMapper, private val eventService: EventService) {
 
     @Autowired
     lateinit var fileStorage: FileStorage
@@ -36,6 +36,7 @@ class UserService(private val userMapper: UserMapper) {
 
         if (regex.matches(changedName)){
             userMapper.updateName(id, changedName)
+            eventService.createEvent(EventTypes.PROFILE_UPDATED.ordinal, null, id, null)
             return userMapper.findById(id)
         }
         else{
