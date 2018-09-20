@@ -29,7 +29,7 @@ class FileDownloadsRestController(private val userService: UserService, private 
   @GetMapping("/download/icon/room/{id}")
   fun downloadFileForRoom(@PathVariable id: Long): ResponseEntity<Resource> {
     var fileName = roomService.getIconRoom(id).icon ?: "default.png"
-    val file = fileStorage.loadFile( fileName,"public/img/icon")
+    val file = fileStorage.loadFile( fileName,"public/img/room")
     return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
             .body(file)
