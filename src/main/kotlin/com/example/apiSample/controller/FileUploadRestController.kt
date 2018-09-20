@@ -80,8 +80,8 @@ class  FileUploadRestController(private val userService: UserService,
 
     if(!file.isEmpty()){
       try{
-        roomService.deleteIcon(id, "public/img/icon")
-        roomService.setIcon(id, "public/img/icon", file)
+        roomService.deleteIcon(id, "public/img/room")
+        roomService.setIcon(id, "public/img/room", file)
         return true
       }
       catch(t: IOException){
@@ -105,7 +105,7 @@ class  FileUploadRestController(private val userService: UserService,
       throw BadRequestException("has no permission")
     }
 
-    roomService.deleteIcon(id, "public/img/icon")
+    roomService.deleteIcon(id, "public/img/room")
     return true
   }
 }
