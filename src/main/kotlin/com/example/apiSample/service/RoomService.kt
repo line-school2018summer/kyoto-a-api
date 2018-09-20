@@ -99,7 +99,7 @@ class RoomService(private val roomMapper: RoomMapper,
     }
 
     fun setIcon(id: Long, location: String, file: MultipartFile){
-        val resized_image = ImageResizer(file.bytes).resize()
+        val resized_image = ImageResizer(file).resize()
         val type = fileStorage.checkFileType(file)
         val resized_file = ByteArrayToMultipartFile(resized_image, file.name, file.originalFilename, type)
         val fileName = id.toString() + type
