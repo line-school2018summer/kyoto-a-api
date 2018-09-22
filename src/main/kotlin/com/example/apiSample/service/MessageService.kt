@@ -45,6 +45,7 @@ class MessageService(private val messageMapper: MessageMapper, private val event
         )
         messageMapper.createMessage(messageInserted)
         eventService.createEvent(EventTypes.MESSAGE_SENT.ordinal, roomId, userId, messageInserted.id)
+        eventService.createEvent(EventTypes.ROOM_UPDATED.ordinal, roomId, userId, messageInserted.id)
         val message = this.getMessageFromId(messageInserted.id)
         return message
     }
