@@ -78,7 +78,11 @@ class EventService(private val eventMapper: EventMapper, private val userMapper:
                 EventTypes.ROOM_MEMBER_DELETED.ordinal -> {
                     publishRoomEventForUsers(event)
                 }
-                EventTypes.MESSAGE_SENT.ordinal,
+                EventTypes.MESSAGE_SENT.ordinal -> {
+                    publishRoomEventForUsers(event)
+                    event.room_id ?: return false
+                    messageTemplate.convertAndSend("/topic/rooms/" + event.room_id.toString() + "/messages", event)
+                }
                 EventTypes.MESSAGE_UPDATED.ordinal,
                 EventTypes.MESSAGE_DELETED.ordinal -> {
                     event.room_id ?: return false
