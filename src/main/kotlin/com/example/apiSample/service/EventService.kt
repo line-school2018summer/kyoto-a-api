@@ -75,7 +75,8 @@ class EventService(private val eventMapper: EventMapper, private val userMapper:
                 EventTypes.ROOM_UPDATED.ordinal,
                 EventTypes.ROOM_MEMBER_JOINED.ordinal,
                 EventTypes.ROOM_MEMBER_LEAVED.ordinal,
-                EventTypes.ROOM_MEMBER_DELETED.ordinal -> {
+                EventTypes.ROOM_MEMBER_DELETED.ordinal,
+                EventTypes.ROOM_ICON_UPDATED.ordinal-> {
                     publishRoomEventForUsers(event)
                 }
                 EventTypes.MESSAGE_SENT.ordinal,

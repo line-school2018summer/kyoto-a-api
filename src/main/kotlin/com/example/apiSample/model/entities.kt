@@ -198,4 +198,5 @@ enum class EventTypes {
     MESSAGE_SENT,
     MESSAGE_UPDATED,
     MESSAGE_DELETED,
+    ROOM_ICON_UPDATED,
 }

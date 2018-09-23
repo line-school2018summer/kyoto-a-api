@@ -105,7 +105,7 @@ class RoomService(private val roomMapper: RoomMapper,
         val fileName = id.toString() + type
         fileStorage.store(resized_file, location, fileName)
         roomMapper.setIcon(id, fileName)
-        eventService.createEvent(EventTypes.ROOM_UPDATED.ordinal, id, null, null)
+        eventService.createEvent(EventTypes.ROOM_ICON_UPDATED.ordinal, id, null, null)
     }
 
     fun deleteIcon(id: Long, location: String){
@@ -114,7 +114,7 @@ class RoomService(private val roomMapper: RoomMapper,
             val prevFile = Paths.get(location).resolve(icon)
             roomMapper.setIcon(id, null)
             Files.delete(prevFile)
-            eventService.createEvent(EventTypes.ROOM_UPDATED.ordinal, id, null, null)
+            eventService.createEvent(EventTypes.ROOM_ICON_UPDATED.ordinal, id, null, null)
         }
     }
 }
