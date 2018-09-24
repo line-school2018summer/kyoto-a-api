@@ -6,6 +6,7 @@ import com.example.apiSample.model.Message
 import com.example.apiSample.service.MessageService
 import com.example.apiSample.model.UserList
 import com.example.apiSample.model.Room
+import com.example.apiSample.model.RoomComparator
 import com.example.apiSample.service.RoomService
 import com.example.apiSample.service.UserService
 import io.swagger.annotations.Api
@@ -13,6 +14,8 @@ import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import java.util.ArrayList
+import java.util.Collections
 
 data class PostRoomRequest(
         @ApiModelProperty(example="海外旅行ぐる", position=0)
@@ -47,6 +50,7 @@ class RoomController(private val roomService: RoomService,
         val uid = authGateway.verifyIdToken(token) ?: throw UnauthorizedException("invalid token")
         val user = userService.findByUid(uid)
         val Rooms: ArrayList<Room> = roomService.getRoomsFromUserId(user.id)
+        Collections.sort(Rooms, RoomComparator())
         return Rooms
     }
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import java.sql.Timestamp
+import java.util.Comparator
+
 
 data class User(
         var id: Long,
@@ -22,6 +24,14 @@ data class UserList(
         var name: String
 )
 
+data class IconUser(
+    var id: Long,
+    var name: String,
+    var icon: String?,
+    @get:JsonProperty("created_at") var createdAt: Timestamp,
+    @get:JsonProperty("updated_at") var updatedAt: Timestamp
+)
+
 data class Room(
 
         @ApiModelProperty(example="1", position=0)
@@ -30,19 +40,34 @@ data class Room(
         @ApiModelProperty(example="海外旅行ぐる", position=1)
         var name: String,
 
-        @ApiModelProperty(position=2)
-        var last_message: Message?,
+        @ApiModelProperty(position=2,example = "こんにちは")
+        var last_message_text: String?,
 
-        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=3)
-        @get:JsonProperty("created_at") var createdAt: Timestamp,
+        @ApiModelProperty(position=3, example="2018-08-24T00:00:00.000+0000")
+        @get:JsonProperty("last_message_created_at") var last_message_created_at: Timestamp?,
 
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=4)
+        @get:JsonProperty("created_at") var createdAt: Timestamp,
+
+        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=5)
         @get:JsonProperty("updated_at") var updatedAt: Timestamp
 )
 
-data class RoomList(
+data class IconRoom(
+
+        @ApiModelProperty(example="1", position=0)
         var id: Long,
-        var name: String
+
+        @ApiModelProperty(example="海外旅行ぐる", position=1)
+        var name: String,
+
+        var icon: String?,
+
+        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=4)
+        @get:JsonProperty("created_at") var createdAt: Timestamp,
+
+        @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=5)
+        @get:JsonProperty("updated_at") var updatedAt: Timestamp
 )
 
 data class UserRoom(
@@ -78,15 +103,15 @@ data class Message(
         @ApiModelProperty(example="こんにちは", position=3)
         var text: String,
 
-        @ApiModelProperty(position=4)
-        var user: NonUidUser?,
+        @ApiModelProperty(example="太郎",position=4)
+        var user_name: String,
 
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=5)
         @get:JsonProperty("created_at") var createdAt: Timestamp,
 
         @ApiModelProperty(example="2018-08-24T00:00:00.000+0000",position=6)
         @get:JsonProperty("updated_at") var updatedAt: Timestamp
-        )
+)
 
 
 data class MessageForMapping (
@@ -130,3 +155,48 @@ data class RoomForMapping (
         var room_created_at: Timestamp,
         var room_updated_at: Timestamp
 )
+
+class RoomComparator : Comparator<Room> {
+
+        override fun compare(R1: Room, R2: Room): Int {
+                return if (lastActivityTime(R1) < lastActivityTime((R2))) 1 else -1
+        }
+
+        fun lastActivityTime(room: Room): Timestamp {
+                val last_message_created_at: Timestamp? = room.last_message_created_at
+                if (last_message_created_at == null) {
+                        return room.createdAt
+                } else {
+                        return last_message_created_at
+                }
+        }
+}
+
+data class Event(
+    var id: Long,
+    var event_type: Int,
+    var room_id: Long?,
+    var user_id: Long?,
+    var message_id: Long?
+)
+
+data class InsertEvent(
+    var id: Long = 0,
+    var event_type: Int,
+    var room_id: Long?,
+    var user_id: Long?,
+    var message_id: Long?
+)
+
+enum class EventTypes {
+    PROFILE_UPDATED,
+    ROOM_CREATED,
+    ROOM_UPDATED,
+    ROOM_MEMBER_JOINED,
+    ROOM_MEMBER_LEAVED,
+    ROOM_MEMBER_DELETED,
+    MESSAGE_SENT,
+    MESSAGE_UPDATED,
+    MESSAGE_DELETED,
+    ROOM_ICON_UPDATED,
+}

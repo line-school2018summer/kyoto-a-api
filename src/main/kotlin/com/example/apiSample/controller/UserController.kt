@@ -65,4 +65,13 @@ class UserController(private val userService: UserService,
     fun findById(@PathVariable("id")id: Long): NonUidUser{
         return userService.findById(id)
     }
+
+    @ApiOperation( value = "nameを用いてユーザー検索を行います")
+    @GetMapping(
+        value = ["/users/search"],
+        produces = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun searchUser(@RequestParam("name") searchStr: String): List<NonUidUser>{
+        return userService.searchUser(searchStr)
+    }
 }
