@@ -24,7 +24,7 @@ class ImageResizer(private val file: MultipartFile) {
         image = file.bytes
     }
 
-    fun resize(height: Int = 60, width: Int = 60): ByteArray {
+    fun resize(height: Int = 256, width: Int = 256): ByteArray {
         // オリジナルのファイルを読み込む
         val original = ImageIO.read(ByteArrayInputStream(image)) ?: throw Exception("File is invalid")
         val originalWidth  = original.width.toDouble()
