@@ -57,6 +57,7 @@ class UserService(private val userMapper: UserMapper, private val eventService: 
         val fileName = id.toString() + type
         fileStorage.store(resized_file, location, fileName)
         userMapper.setIcon(id, fileName)
+        eventService.createEvent(EventTypes.PROFILE_UPDATED.ordinal, null, id, null)
     }
 
     fun deleteIcon(id: Long, location: String){
@@ -65,6 +66,7 @@ class UserService(private val userMapper: UserMapper, private val eventService: 
             val prevFile = Paths.get(location).resolve(icon)
             userMapper.setIcon(id, null)
             Files.delete(prevFile)
+            eventService.createEvent(EventTypes.PROFILE_UPDATED.ordinal, null, id, null)
         }
     }
 
