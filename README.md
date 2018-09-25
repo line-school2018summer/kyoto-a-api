@@ -15,7 +15,7 @@ SHABELはLine SUMMER INTERNSHIP 2018 エンジニアスクールコースにてK
 
 ## デプロイ
 
-1. docs/nginx/kyoto_api.conf を etc/nginx/conf.d/任意の名前.conf にコピー。
+1. docs/nginx/kyoto_api.conf を /   setc/nginx/conf.d/任意の名前.conf にコピー。
 
 2. コピーしたconfig fileを環境に合わせて書き換え。
 
