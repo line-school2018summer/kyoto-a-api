@@ -47,6 +47,7 @@ class EventController(private val eventService: EventService, private val userSe
         val user = userService.findByUid(uid)
         val rooms = roomService.getRoomsFromUserId(user.id)
         val roomIds = rooms.map { it.id }
+        if (roomIds.isEmpty()) return ArrayList()
         return eventService.getRoomEventsFromRoomIds(roomIds, since_id?.toLongOrNull(), limit?.toIntOrNull())
     }
 
