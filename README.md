@@ -15,21 +15,27 @@ SHABELはLine SUMMER INTERNSHIP 2018 エンジニアスクールコースにてK
 
 ## デプロイ
 
-1. docs/models.sqlをサーバー上で実行
+1. docs/nginx/kyoto_api.conf を etc/nginx/conf.d/任意の名前.conf にコピー。
+
+2. コピーしたconfig fileを環境に合わせて書き換え。
+
+3. nginxを再起動
+
+4. docs/models.sqlをサーバー上で実行
 
     ```sh
     mysql -h localhost -u [user] -p < models.sql
     ```
 
-2. プロジェクトルートでGradleビルドを行う
+5. プロジェクトルートでGradleビルドを行う
 
     ```sh
     gradlew build
     ```
 
-3. build/libs/に作成されたjarファイルをサーバーに転送
+6. build/libs/に作成されたjarファイルをサーバーに転送
 
-4. nohupを用いてバックグラウンドで実行
+7. nohupを用いてバックグラウンドで実行
 
     ```sh
     sudo nohup java -jar api.jar &
